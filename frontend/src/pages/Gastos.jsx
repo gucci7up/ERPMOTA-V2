@@ -17,13 +17,17 @@ export default function Gastos() {
         setLoading(true);
         try {
             const r = await fetch(`${API}/gastos`, { credentials: 'include' });
-            setGastos(await r.json());
-        } finally { setLoading(false); }
+            const data = await r.json();
+            setGastos(Array.isArray(data) ? data : []);
+        } catch (e) { setGastos([]); } finally { setLoading(false); }
     };
 
     const fetchBancas = async () => {
-        const r = await fetch(`${API}/bancas`, { credentials: 'include' });
-        setBancas(await r.json());
+        try {
+            const r = await fetch(`${API}/bancas`, { credentials: 'include' });
+            const data = await r.json();
+            setBancas(Array.isArray(data) ? data : []);
+        } catch (e) { setBancas([]); }
     };
 
     const openCreate = () => { setCurrent(null); setForm({ description: '', category: 'Operativo', amount: '', expense_date: new Date().toISOString().split('T')[0], banca_id: '' }); setShowModal(true); };

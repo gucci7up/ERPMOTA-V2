@@ -19,18 +19,25 @@ export default function Nomina() {
         setLoading(true);
         try {
             const r = await fetch(`${API}/pagos-nomina`, { credentials: 'include' });
-            setPagos(await r.json());
-        } finally { setLoading(false); }
+            const data = await r.json();
+            setPagos(Array.isArray(data) ? data : []);
+        } catch (e) { setPagos([]); } finally { setLoading(false); }
     };
 
     const fetchEmpleados = async () => {
-        const r = await fetch(`${API}/empleados`, { credentials: 'include' });
-        setEmpleados(await r.json());
+        try {
+            const r = await fetch(`${API}/empleados`, { credentials: 'include' });
+            const data = await r.json();
+            setEmpleados(Array.isArray(data) ? data : []);
+        } catch (e) { setEmpleados([]); }
     };
 
     const fetchBancas = async () => {
-        const r = await fetch(`${API}/bancas`, { credentials: 'include' });
-        setBancas(await r.json());
+        try {
+            const r = await fetch(`${API}/bancas`, { credentials: 'include' });
+            const data = await r.json();
+            setBancas(Array.isArray(data) ? data : []);
+        } catch (e) { setBancas([]); }
     };
 
     const calcNeto = (f) => (parseFloat(f.base_salary) || 0) - (parseFloat(f.ars_deduction) || 0) - (parseFloat(f.afp_deduction) || 0) - (parseFloat(f.other_deductions) || 0) + (parseFloat(f.bonuses) || 0);

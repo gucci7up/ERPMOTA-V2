@@ -16,13 +16,17 @@ export default function Empleados() {
         setLoading(true);
         try {
             const r = await fetch(`${API}/empleados`, { credentials: 'include' });
-            setEmpleados(await r.json());
-        } finally { setLoading(false); }
+            const data = await r.json();
+            setEmpleados(Array.isArray(data) ? data : []);
+        } catch (e) { setEmpleados([]); } finally { setLoading(false); }
     };
 
     const fetchBancas = async () => {
-        const r = await fetch(`${API}/bancas`, { credentials: 'include' });
-        setBancas(await r.json());
+        try {
+            const r = await fetch(`${API}/bancas`, { credentials: 'include' });
+            const data = await r.json();
+            setBancas(Array.isArray(data) ? data : []);
+        } catch (e) { setBancas([]); }
     };
 
     const openCreate = () => { setCurrent(null); setForm({ name: '', role: '', email: '', phone: '', salary: '', status: 'Activo', banca_id: '' }); setShowModal(true); };
