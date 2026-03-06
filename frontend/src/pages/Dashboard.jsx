@@ -3,7 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, AreaChart, Area
 } from 'recharts';
-import { MoreVertical, TrendingUp, Users, Box, PieChart as PieIcon, Layers, ChevronUp, ChevronDown, DollarSign, Activity, Home } from 'lucide-react';
+import { MoreVertical, TrendingUp, Users, Box, PieChart as PieIcon, Layers, ChevronUp, ChevronDown, DollarSign, Activity, Home, Calendar } from 'lucide-react';
 
 const COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444'];
 
