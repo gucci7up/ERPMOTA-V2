@@ -61,11 +61,18 @@ export default function Configuration({ onSettingsUpdate }) {
 
                 if (logoRes.ok) {
                     const logoData = await logoRes.json();
-                    currentSettings.logo = logoData.url;
-                    setSettings(prev => ({ ...prev, logo: logoData.url }));
+                    const logoUrl = logoData.url;
+                    currentSettings.logo = logoUrl;
+                    setSettings(prev => ({ ...prev, logo: logoUrl }));
                 } else {
-                    const lData = await logoRes.json();
-                    throw new Error(lData.error || 'Error al subir el logo');
+                    let errorMsg = 'Error al subir el logo';
+                    try {
+                        const lData = await logoRes.json();
+                        errorMsg = lData.error || errorMsg;
+                    } catch (e) {
+                        errorMsg = `Error servidor (${logoRes.status})`;
+                    }
+                    throw new Error(errorMsg);
                 }
             }
 
@@ -77,7 +84,8 @@ export default function Configuration({ onSettingsUpdate }) {
                 credentials: 'include',
                 body: JSON.stringify({
                     company_name: currentSettings.company_name,
-                    system_currency: currentSettings.system_currency
+                    system_currency: currentSettings.system_currency,
+                    logo: currentSettings.logo
                 })
             });
 
@@ -86,11 +94,16 @@ export default function Configuration({ onSettingsUpdate }) {
                 setLogoFile(null);
                 if (onSettingsUpdate) onSettingsUpdate();
             } else {
-                throw new Error('Error al guardar los datos');
+                let errorMsg = 'Error al guardar los datos';
+                try {
+                    const d = await res.json();
+                    errorMsg = d.error || errorMsg;
+                } catch (e) {}
+                throw new Error(errorMsg);
             }
 
         } catch (error) {
-            console.error(error);
+            console.error('Save Error:', error);
             setMessage({ text: error.message || 'Error de conexión', type: 'error' });
         } finally {
             setLoading(false);
@@ -160,7 +173,7 @@ export default function Configuration({ onSettingsUpdate }) {
                         >
                             {settings.logo ? (
                                 <img
-                                    src={`https://api-v2.salamihost.lat${settings.logo}`}
+                                    src={settings.logo.startsWith('http') ? settings.logo : `https://api-v2.salamihost.lat${settings.logo}`}
                                     alt="Logo de la Marca"
                                     className="max-h-32 max-w-[80%] object-contain"
                                 />

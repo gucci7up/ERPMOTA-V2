@@ -56,16 +56,16 @@ export default function Layout({ children, user, onLogout, settings }) {
 
   return (
     <div className="flex h-screen bg-bg-main overflow-hidden font-sans" onClick={() => setShowNotifications(false)}>
-      
+
       {/* SIDEBAR */}
       <aside className="w-72 bg-white border-r border-border flex flex-col z-30 shadow-xl shadow-slate-200/50">
         {/* LOGO */}
         <div className="p-10 flex items-center justify-center border-b border-slate-50">
           {settings.logo ? (
             <div className="w-full flex items-center justify-center">
-              <img 
-                src={`https://api-v2.salamihost.lat${settings.logo}`} 
-                alt="Logo" 
+              <img
+                src={settings.logo.startsWith('http') ? settings.logo : `https://api-v2.salamihost.lat${settings.logo}`}
+                alt="Company Logo"
                 className="max-h-24 w-auto object-contain transition-transform hover:scale-105 duration-500"
               />
             </div>
