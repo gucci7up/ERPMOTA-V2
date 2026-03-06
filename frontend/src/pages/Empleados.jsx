@@ -49,76 +49,82 @@ export default function Empleados() {
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-text-main">Staff Management</h1>
-                  <p className="text-text-muted">Manage your employees and assign them to specific locations.</p>
+                  <h1 className="text-3xl font-black text-text-main leading-tight tracking-tight">Gestión de Personal</h1>
+                  <p className="text-text-muted mt-1 font-medium">Administre sus empleados y asígnelos a ubicaciones específicas.</p>
                 </div>
                 <button 
                   onClick={openCreate} 
-                  className="bg-primary hover:bg-indigo-700 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-lg shadow-primary/20 transition-all flex items-center space-x-2"
+                  className="bg-primary hover:bg-indigo-700 text-white px-6 py-3.5 rounded-2xl font-black text-sm shadow-xl shadow-primary/20 transition-all flex items-center space-x-2 transform hover:scale-[1.02] active:scale-[0.98]"
                 >
                   <Plus size={18} />
-                  <span>Add Employee</span>
+                  <span>Añadir Empleado</span>
                 </button>
             </div>
 
-            <div className="bg-white rounded-[32px] border border-border overflow-hidden p-8 shadow-sm">
+            <div className="bg-white rounded-[40px] shadow-sm border border-border overflow-hidden">
                 {loading ? (
-                    <div className="flex justify-center items-center py-12">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    <div className="flex justify-center items-center py-20">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left">
+                        <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="text-xs font-bold text-text-muted uppercase tracking-wider border-b border-slate-50">
-                                    <th className="pb-4 px-4">Employee</th>
-                                    <th className="pb-4 px-4">Role / Contact</th>
-                                    <th className="pb-4 px-4">Location</th>
-                                    <th className="pb-4 px-4">Salary</th>
-                                    <th className="pb-4 px-4">Status</th>
-                                    <th className="pb-4 px-4 text-right">Actions</th>
+                                <tr className="bg-slate-50/50">
+                                    <th className="px-10 py-5 text-[11px] font-black text-text-muted uppercase tracking-widest">Empleado</th>
+                                    <th className="px-10 py-5 text-[11px] font-black text-text-muted uppercase tracking-widest">Cargo / Contacto</th>
+                                    <th className="px-10 py-5 text-[11px] font-black text-text-muted uppercase tracking-widest">Ubicación</th>
+                                    <th className="px-10 py-5 text-[11px] font-black text-text-muted uppercase tracking-widest">Salario</th>
+                                    <th className="px-10 py-5 text-[11px] font-black text-text-muted uppercase tracking-widest">Estado</th>
+                                    <th className="px-10 py-5 text-right text-[11px] font-black text-text-muted uppercase tracking-widest">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody className="text-sm">
+                            <tbody className="divide-y divide-slate-100">
                                 {empleados.map(e => (
-                                    <tr key={e.id} className="group hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
-                                        <td className="py-4 px-4">
-                                            <div className="flex items-center space-x-3">
-                                                <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 font-bold group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                                    <tr key={e.id} className="group hover:bg-slate-50/50 transition-colors">
+                                        <td className="px-10 py-6">
+                                            <div className="flex items-center space-x-4">
+                                                <div className="w-11 h-11 rounded-2xl bg-primary/10 text-primary flex items-center justify-center font-black text-sm border-2 border-white shadow-sm">
                                                     {e.name.charAt(0)}
                                                 </div>
-                                                <span className="font-bold text-text-main">{e.name}</span>
+                                                <div className="flex flex-col">
+                                                  <span className="font-bold text-text-main text-sm">{e.name}</span>
+                                                  <span className="text-[10px] font-black text-text-muted uppercase tracking-tighter mt-0.5">ID: #{e.id}</span>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td className="py-4 px-4">
+                                        <td className="px-10 py-6">
                                             <div className="flex flex-col">
-                                                <span className="text-text-main font-medium">{e.role}</span>
-                                                <span className="text-xs text-text-muted">{e.phone || 'No phone'}</span>
+                                                <span className="text-text-main font-bold text-sm">{e.role}</span>
+                                                <div className="flex items-center text-[11px] font-bold text-text-muted mt-1">
+                                                  <Phone size={12} className="mr-1.5 text-primary/50" />
+                                                  <span>{e.phone || 'Sin teléfono'}</span>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td className="py-4 px-4">
-                                            <div className="flex items-center text-text-muted">
-                                                <MapPin size={14} className="mr-1" />
-                                                <span>{e.banca_name || 'Not assigned'}</span>
+                                        <td className="px-10 py-6">
+                                            <div className="flex items-center text-[11px] font-bold text-text-muted">
+                                                <MapPin size={14} className="mr-1.5 text-primary/50" />
+                                                <span className="uppercase tracking-wider">{e.banca_name || 'No asignado'}</span>
                                             </div>
                                         </td>
-                                        <td className="py-4 px-4 font-bold text-text-main text-base">
-                                            RD$ {parseFloat(e.salary || 0).toLocaleString()}
+                                        <td className="px-10 py-6 font-black text-text-main text-sm">
+                                            RD$ {parseFloat(e.salary || 0).toLocaleString('es-DO')}
                                         </td>
-                                        <td className="py-4 px-4">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${e.status === 'Activo' ? 'bg-green-50 text-accent-green' : 'bg-red-50 text-accent-red'}`}>
+                                        <td className="px-10 py-6">
+                                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tighter shadow-sm border ${e.status === 'Activo' ? 'bg-green-50 text-accent-green border-green-100' : 'bg-red-50 text-accent-red border-red-100'}`}>
                                                 {e.status}
                                             </span>
                                         </td>
-                                        <td className="py-4 px-4">
-                                            <div className="flex justify-end space-x-2">
-                                                <button onClick={() => openEdit(e)} className="p-2 text-text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-all">
-                                                    <Edit2 size={16} />
+                                        <td className="px-10 py-6">
+                                            <div className="flex justify-end space-x-3">
+                                                <button onClick={() => openEdit(e)} className="p-2.5 text-text-muted hover:text-primary hover:bg-primary/5 rounded-xl transition-all">
+                                                    <Edit2 size={18} />
                                                 </button>
-                                                <button onClick={() => handleDelete(e.id)} className="p-2 text-text-muted hover:text-accent-red hover:bg-red-50 rounded-lg transition-all">
-                                                    <Trash2 size={16} />
+                                                <button onClick={() => handleDelete(e.id)} className="p-2.5 text-text-muted hover:text-accent-red hover:bg-red-50 rounded-xl transition-all">
+                                                    <Trash2 size={18} />
                                                 </button>
                                             </div>
                                         </td>
@@ -126,8 +132,8 @@ export default function Empleados() {
                                 ))}
                                 {empleados.length === 0 && (
                                     <tr>
-                                        <td colSpan={6} className="text-center py-12">
-                                            <p className="text-text-muted font-medium">No employees found in the records.</p>
+                                        <td colSpan={6} className="px-10 py-20 text-center text-text-muted font-bold">
+                                            No se encontraron empleados en los registros.
                                         </td>
                                     </tr>
                                 )}
@@ -138,104 +144,128 @@ export default function Empleados() {
             </div>
 
             {showModal && (
-                <div className="fixed inset-0 bg-text-main/20 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-[40px] shadow-2xl p-10 w-full max-w-lg border border-border relative">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+                    <div className="fixed inset-0 bg-text-main/30 backdrop-blur-md" onClick={() => setShowModal(false)}></div>
+                    <div className="relative bg-white rounded-[48px] shadow-2xl w-full max-w-lg border border-border overflow-hidden p-12">
                         <button 
                           onClick={() => setShowModal(false)}
-                          className="absolute top-8 right-8 text-text-muted hover:text-text-main transition-colors p-2 hover:bg-slate-50 rounded-full"
+                          className="absolute top-10 right-10 text-text-muted hover:text-text-main transition-colors p-2.5 hover:bg-slate-50 rounded-full"
                         >
-                          <X size={24} />
+                          <X size={28} />
                         </button>
 
-                        <div className="mb-8">
-                          <h2 className="text-3xl font-bold text-text-main">{current ? 'Edit Employee' : 'New Employee'}</h2>
-                          <p className="text-text-muted">Please fill out the information below.</p>
+                        <div className="mb-10 text-center sm:text-left">
+                          <h2 className="text-3xl font-black text-text-main tracking-tight">{current ? 'Editar Empleado' : 'Nuevo Empleado'}</h2>
+                          <p className="text-text-muted font-medium mt-1">Por favor complete la información del personal.</p>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                              <div className="col-span-2 relative">
-                                <User className="absolute left-4 top-3.5 text-text-muted" size={18} />
-                                <input 
-                                  required 
-                                  placeholder="Full Name" 
-                                  value={form.name} 
-                                  onChange={e => setForm({ ...form, name: e.target.value })} 
-                                  className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-3.5 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" 
-                                />
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                              <div className="sm:col-span-2 space-y-2">
+                                <label className="block text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1">Nombre Completo</label>
+                                <div className="relative">
+                                    <User className="absolute left-6 top-4 text-text-muted" size={18} />
+                                    <input 
+                                      required 
+                                      placeholder="Ej. Juan Pérez" 
+                                      value={form.name} 
+                                      onChange={e => setForm({ ...form, name: e.target.value })} 
+                                      className="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-sm font-bold ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" 
+                                    />
+                                </div>
                               </div>
-                              <div className="relative">
-                                <Briefcase className="absolute left-4 top-3.5 text-text-muted" size={18} />
-                                <input 
-                                  placeholder="Role / Position" 
-                                  value={form.role} 
-                                  onChange={e => setForm({ ...form, role: e.target.value })} 
-                                  className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-3.5 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" 
-                                />
+                              <div className="space-y-2">
+                                <label className="block text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1">Cargo</label>
+                                <div className="relative">
+                                    <Briefcase className="absolute left-6 top-4 text-text-muted" size={18} />
+                                    <input 
+                                      placeholder="Ej. Administrador" 
+                                      value={form.role} 
+                                      onChange={e => setForm({ ...form, role: e.target.value })} 
+                                      className="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-sm font-bold ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" 
+                                    />
+                                </div>
                               </div>
-                              <div className="relative">
-                                <Phone className="absolute left-4 top-3.5 text-text-muted" size={18} />
-                                <input 
-                                  placeholder="Phone" 
-                                  value={form.phone} 
-                                  onChange={e => setForm({ ...form, phone: e.target.value })} 
-                                  className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-3.5 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" 
-                                />
+                              <div className="space-y-2">
+                                <label className="block text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1">Teléfono</label>
+                                <div className="relative">
+                                    <Phone className="absolute left-6 top-4 text-text-muted" size={18} />
+                                    <input 
+                                      placeholder="809-XXX-XXXX" 
+                                      value={form.phone} 
+                                      onChange={e => setForm({ ...form, phone: e.target.value })} 
+                                      className="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-sm font-bold ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" 
+                                    />
+                                </div>
                               </div>
-                              <div className="col-span-2 relative">
-                                <Mail className="absolute left-4 top-3.5 text-text-muted" size={18} />
-                                <input 
-                                  placeholder="Email Address" 
-                                  value={form.email} 
-                                  onChange={e => setForm({ ...form, email: e.target.value })} 
-                                  className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-3.5 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" 
-                                  type="email" 
-                                />
+                              <div className="sm:col-span-2 space-y-2">
+                                <label className="block text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1">Correo Electrónico</label>
+                                <div className="relative">
+                                    <Mail className="absolute left-6 top-4 text-text-muted" size={18} />
+                                    <input 
+                                      placeholder="correo@ejemplo.com" 
+                                      value={form.email} 
+                                      onChange={e => setForm({ ...form, email: e.target.value })} 
+                                      className="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-sm font-bold ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" 
+                                      type="email" 
+                                    />
+                                </div>
                               </div>
-                              <div className="relative">
-                                <DollarSign className="absolute left-4 top-3.5 text-text-muted" size={18} />
-                                <input 
-                                  placeholder="Salary" 
-                                  value={form.salary} 
-                                  onChange={e => setForm({ ...form, salary: e.target.value })} 
-                                  className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-3.5 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" 
-                                  type="number" 
-                                />
+                              <div className="space-y-2">
+                                <label className="block text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1">Salario (RD$)</label>
+                                <div className="relative">
+                                    <DollarSign className="absolute left-6 top-4 text-text-muted" size={18} />
+                                    <input 
+                                      placeholder="0.00" 
+                                      value={form.salary} 
+                                      onChange={e => setForm({ ...form, salary: e.target.value })} 
+                                      className="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-sm font-bold ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" 
+                                      type="number" 
+                                    />
+                                </div>
                               </div>
-                              <select 
-                                value={form.status} 
-                                onChange={e => setForm({ ...form, status: e.target.value })} 
-                                className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
-                              >
-                                <option>Activo</option>
-                                <option>Inactivo</option>
-                              </select>
-                              <div className="col-span-2 relative">
-                                <MapPin className="absolute left-4 top-3.5 text-text-muted" size={18} />
+                              <div className="space-y-2 relative">
+                                <label className="block text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1">Estado</label>
                                 <select 
-                                  value={form.banca_id} 
-                                  onChange={e => setForm({ ...form, banca_id: e.target.value })} 
-                                  className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-3.5 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
+                                  value={form.status} 
+                                  onChange={e => setForm({ ...form, status: e.target.value })} 
+                                  className="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
                                 >
-                                    <option value="">Assign to Location (Banca)</option>
-                                    {bancas.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+                                  <option>Activo</option>
+                                  <option>Inactivo</option>
                                 </select>
+                                <ChevronDown size={14} className="absolute right-6 bottom-5 text-text-muted pointer-events-none" />
+                              </div>
+                              <div className="sm:col-span-2 space-y-2 relative">
+                                <label className="block text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1">Asignar a Banca</label>
+                                <div className="relative">
+                                    <MapPin className="absolute left-6 top-4 text-text-muted" size={18} />
+                                    <select 
+                                      value={form.banca_id} 
+                                      onChange={e => setForm({ ...form, banca_id: e.target.value })} 
+                                      className="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-10 py-4 text-sm font-bold ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none appearance-none cursor-pointer"
+                                    >
+                                        <option value="">Seleccione una ubicación</option>
+                                        {bancas.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+                                    </select>
+                                    <ChevronDown size={14} className="absolute right-6 bottom-5 text-text-muted pointer-events-none" />
+                                </div>
                               </div>
                             </div>
                             
-                            <div className="flex gap-4 pt-6">
+                            <div className="flex gap-4 pt-8">
                                 <button 
                                   type="button" 
                                   onClick={() => setShowModal(false)} 
-                                  className="flex-1 px-4 py-4 rounded-2xl text-sm font-bold border border-border text-text-main hover:bg-slate-50 transition-colors"
+                                  className="flex-1 px-6 py-4 rounded-2xl text-sm font-black border border-border text-text-main hover:bg-slate-50 transition-colors"
                                 >
-                                  Cancel
+                                  Cancelar
                                 </button>
                                 <button 
                                   type="submit" 
-                                  className="flex-[2] bg-primary text-white px-4 py-4 rounded-2xl text-sm font-bold shadow-lg shadow-primary/20 hover:bg-indigo-700 transition-all"
+                                  className="flex-[2] bg-primary text-white px-6 py-4 rounded-2xl text-sm font-black shadow-xl shadow-primary/20 hover:bg-indigo-700 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
                                 >
-                                  {current ? 'Update employee data' : 'Create new employee'}
+                                  {current ? 'Guardar Cambios' : 'Crear Empleado'}
                                 </button>
                             </div>
                         </form>

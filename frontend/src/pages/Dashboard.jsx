@@ -3,30 +3,30 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, AreaChart, Area
 } from 'recharts';
-import { MoreVertical, TrendingUp, Users, Box, PieChart as PieIcon, Layers, ChevronUp, ChevronDown } from 'lucide-react';
+import { MoreVertical, TrendingUp, Users, Box, PieChart as PieIcon, Layers, ChevronUp, ChevronDown, DollarSign, Activity, Home } from 'lucide-react';
 
-const COLORS = ['#8b5cf6', '#f97316', '#fbbf24'];
+const COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444'];
 
 const staffData = [
-  { name: 'Pending', value: 100, color: '#8b5cf6' },
-  { name: 'Approved', value: 60, color: '#f97316' },
-  { name: 'Rejected', value: 40, color: '#fbbf24' },
+  { name: 'Pendiente', value: 100, color: '#4f46e5' },
+  { name: 'Aprobado', value: 60, color: '#10b981' },
+  { name: 'Rechazado', value: 40, color: '#f59e0b' },
 ];
 
 const payrollData = [
-  { name: '30 Sep', salary: 400, tax: 100, loan: 50 },
-  { name: '10 Oct', salary: 420, tax: 110, loan: 40 },
-  { name: '20 Oct', salary: 320, tax: 80, loan: 30 },
-  { name: '30 Oct', salary: 450, tax: 120, loan: 60 },
-  { name: '10 Nov', salary: 410, tax: 105, loan: 50 },
+  { name: '30 Sep', salario: 400, impuestos: 100, prestamos: 50 },
+  { name: '10 Oct', salario: 420, impuestos: 110, prestamos: 40 },
+  { name: '20 Oct', salario: 320, impuestos: 80, prestamos: 30 },
+  { name: '30 Oct', salario: 450, impuestos: 120, prestamos: 60 },
+  { name: '10 Nov', salario: 410, impuestos: 105, prestamos: 50 },
 ];
 
 const incomeData = [
-  { name: '30 Sep', value: 1.5 },
-  { name: '10 Oct', value: 3.2 },
-  { name: '20 Oct', value: 8.5 },
-  { name: '30 Oct', value: 4.8 },
-  { name: '10 Nov', value: 11.8 },
+  { name: '30 Sep', valor: 1.5 },
+  { name: '10 Oct', valor: 3.2 },
+  { name: '20 Oct', valor: 8.5 },
+  { name: '30 Oct', valor: 4.8 },
+  { name: '10 Nov', valor: 11.8 },
 ];
 
 export default function Dashboard() {
@@ -67,51 +67,45 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
             
-            {/* TOP STATS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* STAT CARDS */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <StatCard 
-                  title="Total number of staff" 
+                  title="Total de Personal" 
                   value={metrics.total_empleados} 
-                  trend="+ 12 more than last quarter" 
+                  trend="+ 12 más que el trimestre pasado" 
                   icon={Users} 
-                  iconColor="text-accent-orange" 
-                  iconBg="bg-accent-orange/10" 
+                  color="text-accent-orange" 
                 />
                 <StatCard 
-                  title="Total application" 
+                  title="Operaciones Totales" 
                   value="200" 
-                  trend="+ 0.2% more than last quarter" 
-                  icon={Box} 
-                  iconColor="text-accent-red" 
-                  iconBg="bg-accent-red/10" 
+                  trend="+ 0.2% más que el trimestre pasado" 
+                  icon={Activity} 
+                  color="text-accent-blue" 
                 />
                 <StatCard 
-                  title="Total projects" 
-                  value="38" 
-                  trend="+ 4% more than last quarter" 
-                  icon={PieIcon} 
-                  iconColor="text-accent-purple" 
-                  iconBg="bg-accent-purple/10" 
+                  title="Bancas Activas" 
+                  value={metrics.total_bancas} 
+                  trend="+ 4% más que el trimestre pasado" 
+                  icon={Home} 
+                  color="text-accent-green" 
                 />
                 <StatCard 
-                  title="Total departments" 
-                  value="8" 
-                  trend="Without changes" 
-                  icon={Layers} 
-                  iconColor="text-accent-blue" 
-                  iconBg="bg-accent-blue/10" 
-                  isStable
+                  title="Gastos del Mes" 
+                  value={`RD$ ${metrics.gastos_mes.toLocaleString()}`} 
+                  trend="Sin cambios" 
+                  icon={TrendingUp} 
+                  color="text-accent-red" 
                 />
             </div>
 
-            {/* MIDDLE CHARTS */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 {/* Staff applications card */}
-                <div className="bg-white p-8 rounded-[32px] border border-border flex flex-col items-center">
+                <div className="bg-white p-10 rounded-[40px] shadow-sm border border-border flex flex-col items-center">
                     <div className="w-full flex justify-between items-center mb-8">
-                       <h3 className="text-xl font-bold text-text-main">Staff applications card</h3>
+                       <h3 className="text-xl font-black text-text-main">Solicitudes de Personal</h3>
                        <MoreVertical size={20} className="text-text-muted cursor-pointer" />
                     </div>
                     
@@ -136,8 +130,8 @@ export default function Dashboard() {
                             </PieChart>
                         </ResponsiveContainer>
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <span className="text-3xl font-bold text-text-main">200</span>
-                            <span className="text-xs text-text-muted">Total application</span>
+                            <span className="text-3xl font-black text-text-main">200</span>
+                            <span className="text-xs font-bold text-text-muted uppercase">Total</span>
                         </div>
                     </div>
 
@@ -146,18 +140,21 @@ export default function Dashboard() {
                            <div key={item.name} className="flex flex-col">
                               <div className="flex items-center space-x-2">
                                 <div className="w-1.5 h-6 rounded-full" style={{ backgroundColor: item.color }}></div>
-                                <span className="text-2xl font-bold text-text-main">{item.value}</span>
+                                <span className="text-2xl font-black text-text-main">{item.value}</span>
                               </div>
-                              <span className="text-xs text-text-muted ml-3">{item.name}</span>
+                              <span className="text-[10px] font-black text-text-muted uppercase tracking-wider ml-3">{item.name}</span>
                            </div>
                         ))}
                     </div>
                 </div>
 
                 {/* Annual payroll summary */}
-                <div className="bg-white p-8 rounded-[32px] border border-border">
+                <div className="lg:col-span-2 bg-white p-10 rounded-[40px] shadow-sm border border-border">
                     <div className="w-full flex justify-between items-center mb-8">
-                       <h3 className="text-xl font-bold text-text-main">Annual payroll summary</h3>
+                       <div>
+                           <h3 className="text-xl font-black text-text-main">Resumen de Nómina Anual</h3>
+                           <p className="text-sm text-text-muted font-medium">Distribución de pagos y deducciones</p>
+                       </div>
                        <MoreVertical size={20} className="text-text-muted cursor-pointer" />
                     </div>
                     
@@ -165,108 +162,91 @@ export default function Dashboard() {
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={payrollData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} dy={10} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800, fill: '#64748b' }} dy={10} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800, fill: '#64748b' }} />
                                 <Tooltip cursor={{ fill: 'transparent' }} />
-                                <Bar dataKey="salary" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={8} />
-                                <Bar dataKey="tax" fill="#ef4444" radius={[4, 4, 0, 0]} barSize={8} />
-                                <Bar dataKey="loan" fill="#fbbf24" radius={[4, 4, 0, 0]} barSize={8} />
+                                <Bar dataKey="salario" fill="#4f46e5" radius={[4, 4, 0, 0]} barSize={8} />
+                                <Bar dataKey="impuestos" fill="#ef4444" radius={[4, 4, 0, 0]} barSize={8} />
+                                <Bar dataKey="prestamos" fill="#f59e0b" radius={[4, 4, 0, 0]} barSize={8} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
 
-                    <div className="flex items-center space-x-4 mt-8">
-                       <LegendItem color="#ef4444" label="Net salary" />
-                       <LegendItem color="#fbbf24" label="Tax" />
-                       <LegendItem color="#8b5cf6" label="Loan" />
+                    <div className="flex items-center space-x-6 mt-8">
+                       <LegendItem color="#4f46e5" label="Salario Neto" />
+                       <LegendItem color="#ef4444" label="Impuestos" />
+                       <LegendItem color="#f59e0b" label="Préstamos" />
                     </div>
                 </div>
+            </div>
 
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 {/* Total income */}
-                <div className="bg-white p-8 rounded-[32px] border border-border">
+                <div className="bg-white p-10 rounded-[40px] shadow-sm border border-border">
                     <div className="w-full flex justify-between items-center mb-4">
-                       <h3 className="text-xl font-bold text-text-main">Total income</h3>
+                       <h3 className="text-xl font-black text-text-main">Ingresos Totales</h3>
                        <MoreVertical size={20} className="text-text-muted cursor-pointer" />
                     </div>
                     
                     <div className="mb-8">
-                       <span className="text-3xl font-bold text-text-main">${metrics.balance_neto.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
-                       <div className="flex items-center space-x-1 text-accent-green text-sm font-semibold mt-1">
+                       <span className="text-3xl font-black text-text-main">RD$ {metrics.balance_neto.toLocaleString('es-DO', { minimumFractionDigits: 2 })}</span>
+                       <div className="flex items-center space-x-1 text-accent-green text-sm font-bold mt-1">
                           <ChevronUp size={16} />
-                          <span>21% vs last month</span>
+                          <span>21% vs el mes pasado</span>
                        </div>
                     </div>
 
                     <div className="h-64 w-full">
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={incomeData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                            <AreaChart data={incomeData}>
                                 <defs>
                                     <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                                        <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.1}/>
+                                        <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} dy={10} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} />
+                                <XAxis dataKey="name" hide />
+                                <YAxis hide />
                                 <Tooltip />
-                                <Area type="monotone" dataKey="value" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorIncome)" />
+                                <Area type="monotone" dataKey="valor" stroke="#4f46e5" strokeWidth={3} fillOpacity={1} fill="url(#colorIncome)" />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
-            </div>
 
-            {/* BOTTOM TABLES */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Payment vouchers */}
-                <div className="bg-white p-8 rounded-[32px] border border-border">
-                    <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-xl font-bold text-text-main">Payment vouchers</h3>
-                        <MoreVertical size={20} className="text-text-muted cursor-pointer" />
+                {/* Recent Transactions Table */}
+                <div className="lg:col-span-2 bg-white rounded-[40px] shadow-sm border border-border overflow-hidden">
+                    <div className="p-10 border-b border-border flex items-center justify-between">
+                        <div>
+                            <h3 className="text-xl font-black text-text-main">Transacciones Recientes</h3>
+                            <p className="text-sm text-text-muted font-medium">Últimas operaciones del sistema</p>
+                        </div>
+                        <button className="text-sm font-black text-primary hover:underline underline-offset-4">Ver todo</button>
                     </div>
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left">
+                        <table className="w-full">
                             <thead>
-                                <tr className="text-xs font-bold text-text-muted uppercase tracking-wider">
-                                    <th className="pb-4">S/N</th>
-                                    <th className="pb-4">Subject</th>
-                                    <th className="pb-4">Date</th>
-                                    <th className="pb-4">Status</th>
+                                <tr className="bg-slate-50/50">
+                                    <th className="px-10 py-5 text-left text-[11px] font-black text-text-muted uppercase tracking-widest">Banca</th>
+                                    <th className="px-10 py-5 text-left text-[11px] font-black text-text-muted uppercase tracking-widest">Fecha</th>
+                                    <th className="px-10 py-5 text-left text-[11px] font-black text-text-muted uppercase tracking-widest">Monto</th>
+                                    <th className="px-10 py-5 text-left text-[11px] font-black text-text-muted uppercase tracking-widest">Estado</th>
                                 </tr>
                             </thead>
-                            <tbody className="text-sm">
-                                <TableRow sn="01" subject="Request for FARS for October 2022" date="25/10/2025" status="Pending" />
-                                <TableRow sn="02" subject="Request for project proposal fee" date="19/10/2025" status="Approved" />
-                                <TableRow sn="03" subject="Request for FARS for October 2022" date="10/10/2025" status="Approved" />
-                                <TableRow sn="04" subject="Request for project proposal fee" date="03/10/2025" status="Pending" />
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                {/* Budget history */}
-                <div className="bg-white p-8 rounded-[32px] border border-border">
-                    <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-xl font-bold text-text-main">Budget history</h3>
-                        <MoreVertical size={20} className="text-text-muted cursor-pointer" />
-                    </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead>
-                                <tr className="text-xs font-bold text-text-muted uppercase tracking-wider">
-                                    <th className="pb-4">S/N</th>
-                                    <th className="pb-4">Budget No.</th>
-                                    <th className="pb-4">Budgeted Amunt (N)</th>
-                                    <th className="pb-4">Actual Amount (N)</th>
-                                    <th className="pb-4">Date</th>
-                                </tr>
-                            </thead>
-                            <tbody className="text-sm">
-                                <BudgetRow sn="01" no="00211235" budget="1,400,000.00" actual="1,380,000.00" date="25/10/2025" />
-                                <BudgetRow sn="02" no="36211235" budget="400,000.00" actual="500,000.00" date="22/10/2025" />
-                                <BudgetRow sn="03" no="00214465" budget="2,000,000.00" actual="1,400,000.00" date="20/10/2025" />
-                                <BudgetRow sn="04" no="00214465" budget="800,000.00" actual="1,800,000.00" date="20/10/2025" />
+                            <tbody className="divide-y divide-slate-100">
+                                {[1, 2, 3, 4].map((i) => (
+                                    <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                                        <td className="px-10 py-6 font-bold text-text-main text-sm text-nowrap">Central de Apuestas {i}</td>
+                                        <td className="px-10 py-6 text-sm font-bold text-text-muted">12 Oct, 2023</td>
+                                        <td className="px-10 py-6 font-black text-text-main text-sm text-nowrap">RD$ 1,500.00</td>
+                                        <td className="px-10 py-6">
+                                            <span className="px-4 py-1.5 bg-green-50 text-accent-green text-[11px] font-black rounded-full uppercase tracking-tighter shadow-sm border border-green-100">
+                                                Completado
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
@@ -276,64 +256,27 @@ export default function Dashboard() {
     );
 }
 
-function StatCard({ title, value, trend, icon: Icon, iconColor, iconBg, isStable }) {
-  return (
-    <div className="bg-white p-6 rounded-[32px] border border-border hover:shadow-xl transition-all duration-300 group cursor-pointer">
-      <div className="flex items-start justify-between mb-4">
-        <div className={`p-3 rounded-2xl ${iconBg} ${iconColor} group-hover:scale-110 transition-transform duration-300`}>
-          <Icon size={24} />
+function StatCard({ title, value, trend, icon: Icon, color }) {
+    return (
+        <div className="bg-white p-10 rounded-[40px] shadow-sm border border-border group hover:border-primary/20 transition-all hover:shadow-xl hover:shadow-slate-200/50">
+            <div className={`w-14 h-14 ${color.replace('text', 'bg')}/10 ${color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                <Icon size={28} />
+            </div>
+            <h4 className="text-[11px] font-black text-text-muted uppercase tracking-[0.2em] mb-2">{title}</h4>
+            <p className="text-3xl font-black text-text-main tracking-tighter">{value}</p>
+            <div className="mt-4 flex items-center space-x-1 text-[11px] font-bold text-accent-green uppercase tracking-wider">
+               <ChevronUp size={14} />
+               <span>{trend}</span>
+            </div>
         </div>
-      </div>
-      <div className="space-y-1">
-        <span className="text-4xl font-bold text-text-main">{value}</span>
-        <h3 className="text-sm font-medium text-text-muted">{title}</h3>
-      </div>
-      <div className={`mt-6 flex items-center space-x-1 text-xs font-bold ${isStable ? 'text-accent-green' : 'text-accent-green'}`}>
-        {!isStable && <ChevronUp size={14} />}
-        {isStable && <TrendingUp size={14} />}
-        <span>{trend}</span>
-      </div>
-    </div>
-  );
+    );
 }
 
 function LegendItem({ color, label }) {
   return (
     <div className="flex items-center space-x-2">
-      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }}></div>
-      <span className="text-xs font-bold text-text-muted">{label}</span>
+      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
+      <span className="text-[11px] font-black text-text-muted uppercase tracking-wider">{label}</span>
     </div>
-  );
-}
-
-function TableRow({ sn, subject, date, status }) {
-  const statusStyles = {
-    'Pending': 'text-amber-500 bg-amber-50',
-    'Approved': 'text-accent-green bg-green-50',
-  };
-
-  return (
-    <tr className="border-t border-slate-50 group hover:bg-slate-50 transition-colors">
-      <td className="py-4 font-bold text-text-main">{sn}</td>
-      <td className="py-4 text-text-muted">{subject}</td>
-      <td className="py-4 text-text-muted">{date}</td>
-      <td className="py-4">
-        <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusStyles[status]}`}>
-          {status}
-        </span>
-      </td>
-    </tr>
-  );
-}
-
-function BudgetRow({ sn, no, budget, actual, date }) {
-  return (
-    <tr className="border-t border-slate-50 group hover:bg-slate-50 transition-colors">
-      <td className="py-4 font-bold text-text-main">{sn}</td>
-      <td className="py-4 text-text-muted">{no}</td>
-      <td className="py-4 font-bold text-text-main">RD$ {budget}</td>
-      <td className="py-4 font-bold text-text-main">RD$ {actual}</td>
-      <td className="py-4 text-text-muted">{date}</td>
-    </tr>
   );
 }

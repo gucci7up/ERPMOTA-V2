@@ -4,7 +4,7 @@ import { Save, Upload, Building2, Globe, CheckCircle2, AlertCircle, Image as Ima
 export default function Configuration() {
     const [settings, setSettings] = useState({
         company_name: '',
-        system_currency: 'USD',
+        system_currency: 'DOP',
         logo: ''
     });
 
@@ -65,7 +65,7 @@ export default function Configuration() {
                     setSettings(prev => ({ ...prev, logo: logoData.url }));
                 } else {
                     const lData = await logoRes.json();
-                    throw new Error(lData.error || 'Error uploading logo');
+                    throw new Error(lData.error || 'Error al subir el logo');
                 }
             }
 
@@ -82,15 +82,15 @@ export default function Configuration() {
             });
 
             if (res.ok) {
-                setMessage({ text: 'Settings updated successfully', type: 'success' });
+                setMessage({ text: 'Configuración actualizada con éxito', type: 'success' });
                 setLogoFile(null);
             } else {
-                throw new Error('Error saving data');
+                throw new Error('Error al guardar los datos');
             }
 
         } catch (error) {
             console.error(error);
-            setMessage({ text: error.message || 'Connection error', type: 'error' });
+            setMessage({ text: error.message || 'Error de conexión', type: 'error' });
         } finally {
             setLoading(false);
             setTimeout(() => setMessage({ text: '', type: '' }), 5000);
@@ -100,11 +100,11 @@ export default function Configuration() {
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl">
             <div>
-              <h1 className="text-3xl font-bold text-text-main">System Settings</h1>
-              <p className="text-text-muted mt-1">Global configuration and branding for your organization.</p>
+              <h1 className="text-3xl font-black text-text-main tracking-tight leading-tight">Configuración del Sistema</h1>
+              <p className="text-text-muted mt-1 font-medium">Configuración global e identidad visual para su organización.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="bg-white rounded-[40px] border border-border overflow-hidden p-12 shadow-sm relative">
+            <form onSubmit={handleSubmit} className="bg-white rounded-[48px] border border-border overflow-hidden p-12 shadow-sm relative">
                 {message.text && (
                     <div className={`p-6 mb-8 rounded-[24px] font-bold text-sm flex items-center animate-in slide-in-from-top-4 duration-300 ${message.type === 'success' ? 'bg-green-50 text-accent-green border border-green-100' : 'bg-red-50 text-accent-red border border-red-100'}`}>
                         {message.type === 'success' ? <CheckCircle2 size={20} className="mr-3" /> : <AlertCircle size={20} className="mr-3" />}
@@ -113,68 +113,69 @@ export default function Configuration() {
                 )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    <div className="space-y-8">
+                    <div className="space-y-10">
                         <div className="space-y-2">
-                            <label className="text-xs font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center">
-                                <Building2 size={14} className="mr-2" /> Company Identity
+                            <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center">
+                                <Building2 size={14} className="mr-2 text-primary" /> Identidad de la Empresa
                             </label>
                             <input
                                 type="text"
                                 name="company_name"
                                 value={settings.company_name}
                                 onChange={handleInputChange}
-                                className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none font-bold text-text-main"
-                                placeholder="e.g. Orlando Enterprises S.A."
+                                className="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none text-text-main shadow-inner"
+                                placeholder="Ej: Orlando Enterprises S.A."
                                 required
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-xs font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center">
-                                <Globe size={14} className="mr-2" /> Currency System
+                        <div className="space-y-2 relative">
+                            <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center">
+                                <Globe size={14} className="mr-2 text-primary" /> Sistema de Moneda
                             </label>
                             <select
                                 name="system_currency"
                                 value={settings.system_currency}
                                 onChange={handleInputChange}
-                                className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none font-bold text-text-main appearance-none cursor-pointer"
+                                className="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none text-text-main appearance-none cursor-pointer shadow-inner pr-12"
                             >
-                                <option value="USD">United States Dollar (USD)</option>
-                                <option value="DOP">Dominican Peso (DOP)</option>
+                                <option value="USD">Dólar Estadounidense (USD)</option>
+                                <option value="DOP">Peso Dominicano (RD$)</option>
                                 <option value="EUR">Euro (EUR)</option>
-                                <option value="MXN">Mexican Peso (MXN)</option>
+                                <option value="MXN">Peso Mexicano (MXN)</option>
                             </select>
+                            <ChevronDown size={14} className="absolute right-6 bottom-5 text-text-muted pointer-events-none" />
                         </div>
                     </div>
 
                     <div className="space-y-4">
-                        <label className="text-xs font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center">
-                            <ImageIcon size={14} className="mr-2" /> Visual Identity
+                        <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center">
+                            <ImageIcon size={14} className="mr-2 text-primary" /> Identidad Visual (Logo)
                         </label>
                         
                         <div 
-                          className="h-56 w-full flex flex-col items-center justify-center bg-slate-50 rounded-[32px] border-2 border-dashed border-border overflow-hidden relative group cursor-pointer hover:border-primary/50 transition-all hover:bg-slate-100/50"
+                          className="h-64 w-full flex flex-col items-center justify-center bg-slate-50 rounded-[40px] border-2 border-dashed border-border overflow-hidden relative group cursor-pointer hover:border-primary/50 transition-all hover:bg-slate-100/50 shadow-inner"
                           onClick={() => document.getElementById('logoInput').click()}
                         >
                             {settings.logo ? (
                                 <img
                                     src={`https://api-v2.salamihost.lat${settings.logo}`}
-                                    alt="Brand Logo"
+                                    alt="Logo de la Marca"
                                     className="max-h-32 max-w-[80%] object-contain"
                                 />
                             ) : (
-                                <div className="flex flex-col items-center text-text-muted group-hover:text-primary transition-colors">
-                                    <div className="w-16 h-16 rounded-full bg-slate-200/50 flex items-center justify-center mb-4 group-hover:bg-primary/10">
-                                      <Upload size={24} />
+                                <div className="flex flex-col items-center text-text-muted group-hover:text-primary transition-colors p-8 text-center">
+                                    <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-6 shadow-sm group-hover:shadow-md transition-all group-hover:scale-110">
+                                      <Upload size={32} className="text-primary/40 group-hover:text-primary transition-colors" />
                                     </div>
-                                    <p className="text-sm font-bold">No logo defined</p>
-                                    <p className="text-[10px] mt-1 uppercase tracking-widest font-black opacity-50">Click to upload</p>
+                                    <p className="text-sm font-black text-text-main">No hay logo definido</p>
+                                    <p className="text-[10px] mt-2 uppercase tracking-[0.2em] font-black opacity-40">Click para subir imagen</p>
                                 </div>
                             )}
 
                             <div className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <div className="bg-white px-6 py-2.5 rounded-full shadow-lg text-primary text-xs font-black uppercase tracking-widest">
-                                  Change Logo
+                                <div className="bg-white px-8 py-3 rounded-full shadow-2xl text-primary text-xs font-black uppercase tracking-[0.2em]">
+                                  Cambiar Logo
                                 </div>
                             </div>
                         </div>
@@ -182,47 +183,45 @@ export default function Configuration() {
                         <input id="logoInput" type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
 
                         {logoFile && (
-                            <div className="flex items-center justify-between p-4 bg-primary/5 text-primary rounded-2xl border border-primary/10 animate-in fade-in duration-300">
-                                <div className="flex items-center space-x-3">
-                                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                                    <ImageIcon size={16} />
+                            <div className="flex items-center justify-between p-6 bg-primary/5 text-primary rounded-[32px] border border-primary/10 animate-in fade-in duration-300 shadow-sm">
+                                <div className="flex items-center space-x-4">
+                                  <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                                    <ImageIcon size={20} />
                                   </div>
-                                  <span className="text-sm font-bold truncate max-w-[200px]">{logoFile.name}</span>
+                                  <span className="text-sm font-black truncate max-w-[180px]">{logoFile.name}</span>
                                 </div>
-                                <div className="flex items-center space-x-2 px-3 py-1 bg-primary text-white rounded-full text-[10px] font-black uppercase tracking-tighter">
-                                  Ready to sync
+                                <div className="flex items-center space-x-2 px-4 py-1.5 bg-primary text-white rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg shadow-primary/20">
+                                  Listo para Sincronizar
                                 </div>
                             </div>
                         )}
                     </div>
                 </div>
 
-                <div className="mt-12 pt-10 border-t border-border flex justify-end">
+                <div className="mt-16 pt-10 border-t border-slate-100 flex justify-end">
                     <button
                         type="submit"
                         disabled={loading}
-                        className="flex items-center space-x-3 bg-primary hover:bg-indigo-700 text-white font-black py-4 px-10 rounded-2xl shadow-xl shadow-primary/20 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
+                        className="flex items-center space-x-4 bg-primary hover:bg-indigo-700 text-white font-black py-5 px-12 rounded-[28px] shadow-2xl shadow-primary/30 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
                     >
                         {loading ? (
-                            <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+                            <div className="animate-spin h-6 w-6 border-2 border-white border-t-transparent rounded-full" />
                         ) : (
-                            <Save size={20} />
+                            <Save size={22} strokeWidth={2.5} />
                         )}
-                        <span>{loading ? 'Saving Changes...' : 'Save Configuration'}</span>
+                        <span className="text-sm uppercase tracking-widest">{loading ? 'Guardando Cambios...' : 'Guardar Configuración'}</span>
                     </button>
                 </div>
             </form>
 
-            <div className="bg-slate-50 rounded-[32px] p-8 border border-slate-100">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-2xl bg-white border border-border flex items-center justify-center text-text-muted">
-                  <AlertCircle size={24} />
+            <div className="bg-slate-50 rounded-[40px] p-10 border border-slate-100 shadow-inner flex items-center space-x-6">
+                <div className="w-16 h-16 rounded-[24px] bg-white border border-border/50 flex items-center justify-center text-primary/40 shadow-sm">
+                  <AlertCircle size={32} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-text-main">System Environment</h4>
-                  <p className="text-xs text-text-muted mt-1">Running on API v2.0-stable | Node 18 | Production Environment</p>
+                  <h4 className="font-black text-text-main tracking-tight">Entorno del Sistema</h4>
+                  <p className="text-xs text-text-muted mt-1 font-bold">API v2.0-stable | Node 18 | Entorno de Producción</p>
                 </div>
-              </div>
             </div>
         </div>
     );

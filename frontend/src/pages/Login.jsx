@@ -62,9 +62,9 @@ export default function Login({ onLoginSuccess }) {
                   </div>
 
                   <div className="relative z-10">
-                    <h1 className="text-5xl font-black leading-tight">Modern Business <br/>Intelligence.</h1>
+                    <h1 className="text-5xl font-black leading-tight">Inteligencia de <br/>Negocios Moderna.</h1>
                     <p className="mt-6 text-indigo-100 text-lg font-medium opacity-80 max-w-sm">
-                      Streamline your financial operations with our next-generation ERP platform. Designed for precision and speed.
+                      Optimice sus operaciones financieras con nuestra plataforma ERP de próxima generación. Diseñada para la precisión.
                     </p>
                   </div>
 
@@ -76,15 +76,15 @@ export default function Login({ onLoginSuccess }) {
                         </div>
                       ))}
                     </div>
-                    <p className="text-sm font-bold text-indigo-50">Trusted by 500+ teams</p>
+                    <p className="text-sm font-bold text-indigo-50">Con la confianza de +500 equipos</p>
                   </div>
                 </div>
 
                 {/* Right Side: Login Form */}
                 <div className="md:w-1/2 p-12 md:p-20 flex flex-col justify-center">
                     <div className="mb-10">
-                      <h2 className="text-3xl font-black text-text-main">Welcome Back</h2>
-                      <p className="text-text-muted mt-2 font-medium">Please enter your details to access your account.</p>
+                      <h2 className="text-3xl font-black text-text-main">Bienvenido</h2>
+                      <p className="text-text-muted mt-2 font-medium">Por favor, ingrese sus datos para acceder a su cuenta.</p>
                     </div>
 
                     <form className="space-y-6" onSubmit={handleSubmit}>
@@ -97,7 +97,7 @@ export default function Login({ onLoginSuccess }) {
 
                         <div className="space-y-2">
                             <label className="text-xs font-black text-text-muted uppercase tracking-[0.2em] ml-1">
-                                Email Address
+                                Correo Electrónico
                             </label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-text-muted group-focus-within:text-primary transition-colors">
@@ -116,7 +116,7 @@ export default function Login({ onLoginSuccess }) {
 
                         <div className="space-y-2">
                             <label className="text-xs font-black text-text-muted uppercase tracking-[0.2em] ml-1">
-                                Password
+                                Contraseña
                             </label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-text-muted group-focus-within:text-primary transition-colors">
@@ -137,9 +137,9 @@ export default function Login({ onLoginSuccess }) {
                         <div className="flex items-center justify-between py-2">
                           <label className="flex items-center space-x-2 cursor-pointer">
                             <input type="checkbox" className="w-4 h-4 rounded text-primary focus:ring-primary border-border" />
-                            <span className="text-sm font-bold text-text-muted">Remember me</span>
+                            <span className="text-sm font-bold text-text-muted">Recordarme</span>
                           </label>
-                          <a href="#" className="text-sm font-black text-primary hover:text-indigo-700 transition-colors">Forgot password?</a>
+                          <a href="#" className="text-sm font-black text-primary hover:text-indigo-700 transition-colors">¿Olvidó su contraseña?</a>
                         </div>
 
                         <button
@@ -151,7 +151,7 @@ export default function Login({ onLoginSuccess }) {
                                 <Loader2 size={20} className="animate-spin" />
                             ) : (
                                 <>
-                                  <span>Sign in to System</span>
+                                  <span>Entrar al Sistema</span>
                                   <LogIn size={20} className="group-hover:translate-x-1 transition-transform" />
                                 </>
                             )}
@@ -160,7 +160,7 @@ export default function Login({ onLoginSuccess }) {
 
                     <div className="mt-12 pt-8 border-t border-border text-center">
                       <p className="text-sm text-text-muted font-medium">
-                        Don't have an account? <a href="#" className="text-primary font-black hover:underline underline-offset-4">Contact Support</a>
+                        ¿No tiene una cuenta? <a href="#" className="text-primary font-black hover:underline underline-offset-4">Soporte Técnico</a>
                       </p>
                     </div>
                 </div>

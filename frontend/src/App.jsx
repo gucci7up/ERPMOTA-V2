@@ -14,9 +14,9 @@ class ErrorBoundary extends React.Component {
                         <div className="w-20 h-20 bg-red-50 text-accent-red rounded-3xl flex items-center justify-center mx-auto mb-8">
                           <AlertTriangle size={40} />
                         </div>
-                        <h2 className="text-2xl font-black text-text-main mb-4">Internal System Error</h2>
+                        <h2 className="text-2xl font-black text-text-main mb-4">Error Interno del Sistema</h2>
                         <p className="text-text-muted mb-8 leading-relaxed font-medium">
-                          Something went wrong while rendering this page. Our technical team has been notified.
+                          Algo salió mal al cargar esta página. Nuestro equipo técnico ha sido notificado.
                         </p>
                         <div className="bg-slate-50 rounded-2xl p-4 mb-8 text-left overflow-auto max-h-40 border border-slate-100">
                           <pre className="text-[10px] text-slate-500 font-mono leading-tight">
@@ -28,7 +28,7 @@ class ErrorBoundary extends React.Component {
                           className="w-full flex items-center justify-center space-x-2 bg-primary hover:bg-indigo-700 text-white py-4 rounded-2xl font-black text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98]"
                         >
                             <RefreshCw size={18} />
-                            <span>Reload Application</span>
+                            <span>Recargar Aplicación</span>
                         </button>
                     </div>
                 </div>
@@ -76,7 +76,7 @@ export default function App() {
         } catch (error) {
             console.error('Error checking session', error);
         } finally {
-            // Artificial delay for premium feel loading (optional, but makes it feel "loaded")
+            // Artificial delay for premium feel loading
             setTimeout(() => setLoading(false), 800);
         }
     };

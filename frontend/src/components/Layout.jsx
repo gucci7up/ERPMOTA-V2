@@ -31,9 +31,9 @@ export default function Layout({ children, user, onLogout }) {
     }`;
 
   const navItems = [
-    { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+    { name: 'Panel de Control', path: '/', icon: LayoutDashboard },
     { name: 'Bancas', path: '/bancas', icon: Layers },
-    { name: 'Staff', path: '/empleados', icon: Users },
+    { name: 'Personal', path: '/empleados', icon: Users },
     { name: 'Operaciones', path: '/operaciones', icon: Receipt },
     { name: 'Gastos', path: '/gastos', icon: Wallet },
     { name: 'Nómina', path: '/nomina', icon: Box },
@@ -55,7 +55,7 @@ export default function Layout({ children, user, onLogout }) {
 
         {/* NAVIGATION */}
         <nav className="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
-          <p className="px-4 text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-4 mt-2">Main Menu</p>
+          <p className="px-4 text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-4 mt-2">Menú Principal</p>
           {navItems.map((item) => (
             <NavLink key={item.path} to={item.path} end={item.path === '/'} className={navLinkClass}>
               <item.icon size={20} className="group-hover:scale-110 transition-transform" />
@@ -64,10 +64,10 @@ export default function Layout({ children, user, onLogout }) {
           ))}
 
           <div className="pt-6 mt-6 border-t border-slate-100">
-             <p className="px-4 text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-4">System</p>
+             <p className="px-4 text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-4">Sistema</p>
              <NavLink to="/configuracion" className={navLinkClass}>
                 <Settings size={20} className="group-hover:rotate-45 transition-transform duration-500" />
-                <span className="text-[14px]">Settings</span>
+                <span className="text-[14px]">Configuración</span>
              </NavLink>
           </div>
         </nav>
@@ -78,12 +78,12 @@ export default function Layout({ children, user, onLogout }) {
             <div className="flex items-center justify-between mb-3">
                <div className="w-8 h-8 rounded-lg bg-accent-orange/10 text-accent-orange flex items-center justify-center font-bold text-xs">AI</div>
                <div className="flex items-center text-[10px] font-black text-text-muted uppercase tracking-wider">
-                 <span>Pro Plan</span>
+                 <span>Plan Pro</span>
                  <Bell size={12} className="ml-2 animate-bounce" />
                </div>
             </div>
             <button className="w-full bg-white border border-border py-2 px-4 rounded-xl text-xs font-black text-text-main shadow-sm hover:shadow-md transition-all uppercase tracking-widest">
-              Manage Billing
+              Gestionar Facturación
             </button>
           </div>
           
@@ -92,7 +92,7 @@ export default function Layout({ children, user, onLogout }) {
             className="flex items-center space-x-3 w-full px-4 py-3 text-text-muted hover:text-accent-red hover:bg-red-50 rounded-xl transition-all group"
           >
             <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="text-[14px] font-bold">Logout</span>
+            <span className="text-[14px] font-bold">Cerrar Sesión</span>
           </button>
         </div>
       </aside>
@@ -103,14 +103,16 @@ export default function Layout({ children, user, onLogout }) {
         {/* HEADER */}
         <header className="h-20 bg-white border-b border-border flex items-center justify-between px-10 shrink-0 z-20">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-black text-text-main tracking-tight">Bonjour, {user.name.split(' ')[0]}!</h1>
-            <span className="text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">{new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+            <h1 className="text-2xl font-black text-text-main tracking-tight">¡Hola, {user.name.split(' ')[0]}!</h1>
+            <span className="text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">
+              {new Date().toLocaleDateString('es-DO', { weekday: 'long', day: 'numeric', month: 'long' })}
+            </span>
           </div>
 
           <div className="flex items-center space-x-4">
             <div className="hidden lg:flex items-center space-x-2 bg-slate-50 border border-border px-4 py-2.5 rounded-xl text-[13px] font-bold text-text-main">
               <Calendar size={16} className="text-primary" />
-              <span>Oct 2023 Overview</span>
+              <span>Resumen de Octubre</span>
               <ChevronDown size={14} className="text-text-muted" />
             </div>
 
@@ -119,7 +121,7 @@ export default function Layout({ children, user, onLogout }) {
             </button>
             <button className="flex items-center space-x-2 px-4 py-2.5 bg-text-main text-white rounded-xl text-[13px] font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
               <Download size={16} />
-              <span>Quick Export</span>
+              <span>Exportar</span>
             </button>
 
             <div className="h-8 w-px bg-border mx-2"></div>
@@ -127,7 +129,7 @@ export default function Layout({ children, user, onLogout }) {
             <div className="flex items-center space-x-3 cursor-pointer group">
               <div className="flex flex-col items-end">
                 <span className="text-sm font-black text-text-main leading-none group-hover:text-primary transition-colors">{user.name}</span>
-                <span className="text-[10px] font-black text-text-muted uppercase tracking-tighter mt-1">{user.role || 'Administrator'}</span>
+                <span className="text-[10px] font-black text-text-muted uppercase tracking-tighter mt-1">{user.role || 'Administrador'}</span>
               </div>
               <div className="w-10 h-10 rounded-2xl bg-primary/10 border-2 border-white overflow-hidden flex items-center justify-center text-primary font-black shadow-lg shadow-primary/10 group-hover:scale-105 transition-transform">
                 {userInitials}
@@ -144,7 +146,7 @@ export default function Layout({ children, user, onLogout }) {
           
           <footer className="mt-20 pb-10 text-center">
             <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] opacity-40">
-              &copy; 2026 ERPMOTA V2 &bull; PRECISION & PERFORMANCE
+              &copy; 2026 ERPMOTA V2 &bull; PRECISIÓN & RENDIMIENTO
             </p>
           </footer>
         </div>
