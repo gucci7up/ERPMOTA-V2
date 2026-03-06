@@ -1,0 +1,8 @@
+{
+    "name": "erpmota/backend",
+    "description": "Pure PHP Backend for ERPMOTA",
+    "type": "project",
+    "require": {
+        "php": ">=8.0"
+    }
+}
