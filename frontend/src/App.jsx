@@ -61,11 +61,27 @@ const ProtectedRoute = ({ user, children }) => {
 
 export default function App() {
     const [user, setUser] = useState(null);
+    const [settings, setSettings] = useState({ company_name: 'ERPMOTA', logo: '' });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         checkSession();
+        fetchSettings();
     }, []);
+
+    const fetchSettings = async () => {
+        try {
+            const response = await fetch('https://api-v2.salamihost.lat/api/settings', {
+                credentials: 'include'
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setSettings(data);
+            }
+        } catch (err) {
+            console.error('Error fetching settings:', err);
+        }
+    };
 
     const checkSession = async () => {
         try {
@@ -128,7 +144,7 @@ export default function App() {
                         path="/*"
                         element={
                             <ProtectedRoute user={user}>
-                                <Layout user={user} onLogout={handleLogout}>
+                                <Layout user={user} onLogout={handleLogout} settings={settings}>
                                     <Routes>
                                         <Route path="/" element={<Dashboard />} />
                                         <Route path="/bancas" element={<Bancas />} />
@@ -137,7 +153,7 @@ export default function App() {
                                         <Route path="/gastos" element={<Gastos />} />
                                         <Route path="/nomina" element={<Nomina />} />
                                         <Route path="/reportes" element={<Reportes />} />
-                                        <Route path="/configuracion" element={<Configuration />} />
+                                        <Route path="/configuracion" element={<Configuration onSettingsUpdate={fetchSettings} />} />
                                         <Route path="*" element={<Navigate to="/" replace />} />
                                     </Routes>
                                 </Layout>

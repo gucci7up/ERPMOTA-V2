@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -18,7 +19,7 @@ import {
   Layers
 } from 'lucide-react';
 
-export default function Layout({ children, user, onLogout }) {
+export default function Layout({ children, user, onLogout, settings }) {
   if (!user) return null;
 
   const userInitials = user.name ? user.name.charAt(0).toUpperCase() : 'U';
@@ -47,10 +48,22 @@ export default function Layout({ children, user, onLogout }) {
       <aside className="w-72 bg-white border-r border-border flex flex-col z-30 shadow-xl shadow-slate-200/50">
         {/* LOGO */}
         <div className="p-8 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary group transition-all hover:bg-primary hover:text-white cursor-pointer">
-             <Sparkles size={22} />
-          </div>
-          <span className="text-2xl font-black text-text-main tracking-tighter">ERPMOTA</span>
+          {settings.logo ? (
+            <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center">
+              <img 
+                src={`https://api-v2.salamihost.lat${settings.logo}`} 
+                alt="Logo" 
+                className="w-full h-full object-contain"
+              />
+            </div>
+          ) : (
+            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary group transition-all hover:bg-primary hover:text-white cursor-pointer">
+               <Sparkles size={22} />
+            </div>
+          )}
+          <span className="text-2xl font-black text-text-main tracking-tighter truncate">
+            {settings.company_name || 'ERPMOTA'}
+          </span>
         </div>
 
         {/* NAVIGATION */}

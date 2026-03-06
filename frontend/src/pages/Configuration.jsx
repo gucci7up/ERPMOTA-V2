@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Upload, Building2, Globe, CheckCircle2, AlertCircle, Image as ImageIcon, X, ChevronDown } from 'lucide-react';
 
-export default function Configuration() {
+export default function Configuration({ onSettingsUpdate }) {
     const [settings, setSettings] = useState({
         company_name: '',
         system_currency: 'DOP',
@@ -84,6 +84,7 @@ export default function Configuration() {
             if (res.ok) {
                 setMessage({ text: 'Configuración actualizada con éxito', type: 'success' });
                 setLogoFile(null);
+                if (onSettingsUpdate) onSettingsUpdate();
             } else {
                 throw new Error('Error al guardar los datos');
             }
