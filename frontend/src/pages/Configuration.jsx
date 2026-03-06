@@ -55,7 +55,7 @@ export default function Configuration() {
 
                 const logoRes = await fetch('https://api-v2.salamihost.lat/api/settings/logo', {
                     method: 'POST',
-                    credentials: 'true',
+                    credentials: 'include',
                     body: formData
                 });
 
