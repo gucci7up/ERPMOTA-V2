@@ -1,6 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
+// Error Boundary para mostrar errores en vez de pantalla blanca
+class ErrorBoundary extends React.Component {
+    constructor(props) { super(props); this.state = { hasError: false, error: null }; }
+    static getDerivedStateFromError(error) { return { hasError: true, error }; }
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div style={{ padding: 32, fontFamily: 'monospace', background: '#1e293b', color: '#f87171', minHeight: '100vh' }}>
+                    <h2 style={{ color: '#fbbf24', marginBottom: 12 }}>⚠️ Error de Renderizado React</h2>
+                    <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', background: '#0f172a', padding: 16, borderRadius: 8 }}>
+                        {this.state.error?.toString()}{'\n\n'}{this.state.error?.stack}
+                    </pre>
+                    <button onClick={() => window.location.reload()} style={{ marginTop: 16, background: '#3b82f6', color: '#fff', border: 'none', padding: '8px 20px', borderRadius: 6, cursor: 'pointer' }}>
+                        Recargar
+                    </button>
+                </div>
+            );
+        }
+        return this.props.children;
+    }
+}
+
 // Importar Componentes Compartidos
 import Layout from './components/Layout';
 
@@ -80,41 +102,43 @@ export default function App() {
     }
 
     return (
-        <Router>
-            <Routes>
-                {/* RUTA PÚBLICA: Login */}
-                <Route
-                    path="/login"
-                    element={
-                        user ? <Navigate to="/" replace /> : <Login onLoginSuccess={handleLoginSuccess} />
-                    }
-                />
+        <ErrorBoundary>
+            <Router>
+                <Routes>
+                    {/* RUTA PÚBLICA: Login */}
+                    <Route
+                        path="/login"
+                        element={
+                            user ? <Navigate to="/" replace /> : <Login onLoginSuccess={handleLoginSuccess} />
+                        }
+                    />
 
-                {/* RUTAS PRIVADAS: Cascarón del Sistema (Layout) */}
-                <Route
-                    path="/*"
-                    element={
-                        <ProtectedRoute user={user}>
-                            <Layout user={user} onLogout={handleLogout}>
-                                <Routes>
-                                    {/* Rutas Internas Anidadas */}
-                                    <Route path="/" element={<Dashboard />} />
-                                    <Route path="/bancas" element={<Bancas />} />
-                                    <Route path="/empleados" element={<Empleados />} />
-                                    <Route path="/operaciones" element={<Operaciones />} />
-                                    <Route path="/gastos" element={<Gastos />} />
-                                    <Route path="/nomina" element={<Nomina />} />
-                                    <Route path="/reportes" element={<Reportes />} />
-                                    <Route path="/configuracion" element={<Configuration />} />
+                    {/* RUTAS PRIVADAS: Cascarón del Sistema (Layout) */}
+                    <Route
+                        path="/*"
+                        element={
+                            <ProtectedRoute user={user}>
+                                <Layout user={user} onLogout={handleLogout}>
+                                    <Routes>
+                                        {/* Rutas Internas Anidadas */}
+                                        <Route path="/" element={<Dashboard />} />
+                                        <Route path="/bancas" element={<Bancas />} />
+                                        <Route path="/empleados" element={<Empleados />} />
+                                        <Route path="/operaciones" element={<Operaciones />} />
+                                        <Route path="/gastos" element={<Gastos />} />
+                                        <Route path="/nomina" element={<Nomina />} />
+                                        <Route path="/reportes" element={<Reportes />} />
+                                        <Route path="/configuracion" element={<Configuration />} />
 
-                                    {/* Fallback para 404 interno */}
-                                    <Route path="*" element={<Navigate to="/" replace />} />
-                                </Routes>
-                            </Layout>
-                        </ProtectedRoute>
-                    }
-                />
-            </Routes>
-        </Router>
+                                        {/* Fallback para 404 interno */}
+                                        <Route path="*" element={<Navigate to="/" replace />} />
+                                    </Routes>
+                                </Layout>
+                            </ProtectedRoute>
+                        }
+                    />
+                </Routes>
+            </Router>
+        </ErrorBoundary>
     );
 }
