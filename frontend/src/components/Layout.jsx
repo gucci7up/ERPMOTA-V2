@@ -47,13 +47,13 @@ export default function Layout({ children, user, onLogout, settings }) {
       {/* SIDEBAR */}
       <aside className="w-72 bg-white border-r border-border flex flex-col z-30 shadow-xl shadow-slate-200/50">
         {/* LOGO */}
-        <div className="p-8 flex items-center space-x-3">
+        <div className="p-10 flex items-center justify-center border-b border-slate-50">
           {settings.logo ? (
-            <div className="flex-1 flex items-center justify-center p-2">
+            <div className="w-full flex items-center justify-center">
               <img 
                 src={`https://api-v2.salamihost.lat${settings.logo}`} 
                 alt="Logo" 
-                className="max-h-12 w-auto object-contain"
+                className="max-h-24 w-auto object-contain transition-transform hover:scale-105 duration-500"
               />
             </div>
           ) : (
