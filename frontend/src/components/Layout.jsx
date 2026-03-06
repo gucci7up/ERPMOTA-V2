@@ -49,21 +49,23 @@ export default function Layout({ children, user, onLogout, settings }) {
         {/* LOGO */}
         <div className="p-8 flex items-center space-x-3">
           {settings.logo ? (
-            <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center">
+            <div className="flex-1 flex items-center justify-center p-2">
               <img 
                 src={`https://api-v2.salamihost.lat${settings.logo}`} 
                 alt="Logo" 
-                className="w-full h-full object-contain"
+                className="max-h-12 w-auto object-contain"
               />
             </div>
           ) : (
-            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary group transition-all hover:bg-primary hover:text-white cursor-pointer">
-               <Sparkles size={22} />
-            </div>
+            <>
+              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary group transition-all hover:bg-primary hover:text-white cursor-pointer">
+                 <Sparkles size={22} />
+              </div>
+              <span className="text-2xl font-black text-text-main tracking-tighter truncate">
+                {settings.company_name || 'ERPMOTA'}
+              </span>
+            </>
           )}
-          <span className="text-2xl font-black text-text-main tracking-tighter truncate">
-            {settings.company_name || 'ERPMOTA'}
-          </span>
         </div>
 
         {/* NAVIGATION */}
