@@ -88,7 +88,7 @@ export default function App() {
 
     const handleLogout = async () => {
         try {
-            await fetch('https://api-v2.salamihost.lat/api/logout', { method: 'POST', credentials: 'true' });
+            await fetch('https://api-v2.salamihost.lat/api/logout', { method: 'POST', credentials: 'include' });
         } catch (e) { /* ignore */ }
 
         setUser(null);

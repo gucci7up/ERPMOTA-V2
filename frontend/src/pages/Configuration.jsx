@@ -74,7 +74,7 @@ export default function Configuration() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                credentials: 'true',
+                credentials: 'include',
                 body: JSON.stringify({
                     company_name: currentSettings.company_name,
                     system_currency: currentSettings.system_currency
