@@ -87,10 +87,24 @@ export default function App() {
         try {
             const storedUser = localStorage.getItem('erp_user');
             if (storedUser) {
-                setUser(JSON.parse(storedUser));
+                // Verify session actively with the server
+                const response = await fetch('https://api-v2.salamihost.lat/api/settings', {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    setUser(JSON.parse(storedUser));
+                    setSettings(data);
+                } else if (response.status === 401) {
+                    // Session is invalid on server side
+                    console.warn('Session expired or invalid. Clearing state.');
+                    localStorage.removeItem('erp_user');
+                    setUser(null);
+                }
             }
         } catch (error) {
-            console.error('Error checking session', error);
+            console.error('Error checking session:', error);
         } finally {
             // Artificial delay for premium feel loading
             setTimeout(() => setLoading(false), 800);
