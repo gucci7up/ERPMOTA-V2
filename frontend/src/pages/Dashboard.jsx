@@ -7,6 +7,26 @@ import { MoreVertical, TrendingUp, Users, Box, PieChart as PieIcon, Layers, Chev
 
 const COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444'];
 
+const flowData = [
+  { name: 'Lun', ingresos: 40, ganancia: 24, premios: 10 },
+  { name: 'Mar', ingresos: 30, ganancia: 13, premios: 22 },
+  { name: 'Mie', ingresos: 20, ganancia: 58, premios: 23 },
+  { name: 'Jue', ingresos: 27, ganancia: 39, premios: 20 },
+  { name: 'Vie', ingresos: 18, ganancia: 48, premios: 11 },
+  { name: 'Sab', ingresos: 23, ganancia: 38, premios: 12 },
+  { name: 'Dom', ingresos: 34, ganancia: 43, premios: 15 },
+];
+
+const weeklyData = [
+  { name: 'Mon', valor: 0.1 },
+  { name: 'Tue', valor: 0.1 },
+  { name: 'Wed', valor: 0.1 },
+  { name: 'Thu', valor: 0.1 },
+  { name: 'Fri', valor: 0.1 },
+  { name: 'Sat', valor: 0.1 },
+  { name: 'Sun', valor: 0.1 },
+];
+
 const staffData = [
   { name: 'Pendiente', value: 100, color: '#4f46e5' },
   { name: 'Aprobado', value: 60, color: '#10b981' },
@@ -19,14 +39,6 @@ const payrollData = [
   { name: 'Ene', salario: 320, impuestos: 80, gastos: 30 },
   { name: 'Feb', salario: 450, impuestos: 120, gastos: 60 },
   { name: 'Mar', salario: 410, impuestos: 105, gastos: 50 },
-];
-
-const incomeData = [
-  { name: 'Nov', valor: 1.5 },
-  { name: 'Dic', valor: 3.2 },
-  { name: 'Ene', valor: 8.5 },
-  { name: 'Feb', valor: 4.8 },
-  { name: 'Mar', valor: 11.8 },
 ];
 
 export default function Dashboard() {
@@ -69,145 +81,184 @@ export default function Dashboard() {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
             
-            {/* STAT CARDS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <StatCard 
-                  title="Total de Personal" 
-                  value={metrics.total_empleados} 
-                  trend="+ 12 más que el trimestre pasado" 
-                  icon={Users} 
-                  color="text-accent-orange" 
-                />
-                <StatCard 
-                  title="Operaciones Totales" 
-                  value="200" 
-                  trend="+ 0.2% más que el trimestre pasado" 
-                  icon={Activity} 
-                  color="text-accent-blue" 
-                />
-                <StatCard 
-                  title="Bancas Activas" 
-                  value={metrics.total_bancas} 
-                  trend="+ 4% más que el trimestre pasado" 
-                  icon={Home} 
-                  color="text-accent-green" 
-                />
-                <StatCard 
-                  title="Gastos del Mes" 
-                  value={`RD$ ${metrics.gastos_mes.toLocaleString()}`} 
-                  trend="Sin cambios" 
-                  icon={TrendingUp} 
-                  color="text-accent-red" 
-                />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-1 gap-10">
-                {/* Annual payroll summary */}
-                <div className="bg-white p-10 rounded-[40px] shadow-md border border-border">
-                    <div className="w-full flex justify-between items-center mb-8">
-                       <div>
-                           <h3 className="text-xl font-black text-text-main">Resumen de Nómina Anual</h3>
-                           <p className="text-sm text-text-muted font-medium">Distribución de pagos y deducciones</p>
-                       </div>
-                       <MoreVertical size={20} className="text-text-muted cursor-pointer" />
-                    </div>
-                    
-                    <div className="h-64 w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={payrollData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800, fill: '#64748b' }} dy={10} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800, fill: '#64748b' }} />
-                                <Tooltip cursor={{ fill: 'transparent' }} />
-                                <Bar dataKey="salario" fill="#4f46e5" radius={[4, 4, 0, 0]} barSize={8} />
-                                <Bar dataKey="impuestos" fill="#ef4444" radius={[4, 4, 0, 0]} barSize={8} />
-                                <Bar dataKey="gastos" fill="#f59e0b" radius={[4, 4, 0, 0]} barSize={8} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-
-                    <div className="flex items-center space-x-6 mt-8">
-                       <LegendItem color="#4f46e5" label="Salario Neto" />
-                       <LegendItem color="#ef4444" label="Impuestos" />
-                       <LegendItem color="#f59e0b" label="Gastos" />
-                    </div>
-                </div>
-            </div>
-
+            {/* TOP ROW: FLOW STATS & BALANCE */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                {/* Total income */}
-                <div className="bg-white p-10 rounded-[40px] shadow-md border border-border">
-                    <div className="w-full flex justify-between items-center mb-4">
-                       <h3 className="text-xl font-black text-text-main">Ingresos Totales</h3>
-                       <MoreVertical size={20} className="text-text-muted cursor-pointer" />
-                    </div>
-                    
-                    <div className="mb-8">
-                       <span className="text-3xl font-black text-text-main">RD$ {metrics.balance_neto.toLocaleString('es-DO', { minimumFractionDigits: 2 })}</span>
-                       <div className="flex items-center space-x-1 text-accent-green text-sm font-bold mt-1">
-                          <ChevronUp size={16} />
-                          <span>21% vs el mes pasado</span>
-                       </div>
+                {/* FLOW STATISTICS */}
+                <div className="lg:col-span-2 bg-white p-10 rounded-[40px] shadow-md border border-border">
+                    <div className="flex justify-between items-center mb-10">
+                        <h3 className="text-xl font-black text-text-main">Estadísticas de Flujo</h3>
+                        <MoreVertical size={20} className="text-text-muted cursor-pointer" />
                     </div>
 
-                    <div className="h-64 w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={incomeData}>
-                                <defs>
-                                    <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.1}/>
-                                        <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="name" hide />
-                                <YAxis hide />
-                                <Tooltip />
-                                <Area type="monotone" dataKey="valor" stroke="#4f46e5" strokeWidth={3} fillOpacity={1} fill="url(#colorIncome)" />
-                            </AreaChart>
-                        </ResponsiveContainer>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                        <div className="space-y-6">
+                            <FlowIndicator 
+                                icon={<div className="bg-yellow-100 p-3 rounded-2xl text-yellow-600"><DollarSign size={20}/></div>}
+                                label="Ingresos Totales"
+                                value={`RD$ ${metrics.ingresos_mes.toLocaleString()}`}
+                            />
+                            <FlowIndicator 
+                                icon={<div className="bg-green-100 p-3 rounded-2xl text-green-600"><Calendar size={20}/></div>}
+                                label="Ganancia Semanal"
+                                value="RD$ 0.00"
+                            />
+                            <FlowIndicator 
+                                icon={<div className="bg-red-100 p-3 rounded-2xl text-red-600"><Activity size={20}/></div>}
+                                label="Premios Pagados"
+                                value="RD$ 0.00"
+                            />
+                        </div>
+
+                        <div className="md:col-span-3 h-64 relative">
+                            <div className="absolute top-0 right-0 text-[10px] font-black text-text-muted uppercase tracking-widest">Max</div>
+                            <div className="absolute bottom-4 right-0 text-[10px] font-black text-text-muted uppercase tracking-widest">Min</div>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={flowData} margin={{ top: 20, right: 40, left: 0, bottom: 0 }}>
+                                    <Bar dataKey="ingresos" fill="#f59e0b" radius={[4, 4, 4, 4]} barSize={6} />
+                                    <Bar dataKey="ganancia" fill="#10b981" radius={[4, 4, 4, 4]} barSize={6} />
+                                    <Bar dataKey="premios" fill="#ef4444" radius={[4, 4, 4, 4]} barSize={6} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 </div>
 
-                {/* Recent Transactions Table */}
-                <div className="lg:col-span-2 bg-white rounded-[40px] shadow-md border border-border overflow-hidden">
-                    <div className="p-10 border-b border-border flex items-center justify-between">
-                        <div>
-                            <h3 className="text-xl font-black text-text-main">Transacciones Recientes</h3>
-                            <p className="text-sm text-text-muted font-medium">Últimas operaciones del sistema</p>
+                {/* MY BALANCE CARD */}
+                <div className="space-y-10">
+                    <div className="bg-gradient-to-br from-primary to-indigo-800 p-10 rounded-[40px] shadow-2xl shadow-primary/20 text-white relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-white/20 transition-all"></div>
+                        
+                        <div className="relative z-10 space-y-8">
+                            <div className="flex justify-between items-center">
+                                <h3 className="text-lg font-bold opacity-80">Mi Balance</h3>
+                            </div>
+                            
+                            <div>
+                                <p className="text-sm font-medium opacity-70 mb-1">Balance General</p>
+                                <p className="text-4xl font-black tracking-tighter">RD$ {metrics.balance_neto.toLocaleString()}</p>
+                            </div>
+
+                            <div className="flex justify-between items-end">
+                                <div>
+                                    <p className="text-xs font-medium opacity-70 mb-1">Ganancia Computada</p>
+                                    <p className="text-xl font-black">RD$ 0.00</p>
+                                </div>
+                                <div className="bg-white/20 px-3 py-1.5 rounded-full text-[10px] font-black backdrop-blur-md">
+                                    +10%
+                                </div>
+                            </div>
+
+                            <div className="flex justify-center space-x-2 pt-4">
+                                <div className="w-2 h-2 rounded-full bg-white"></div>
+                                <div className="w-2 h-2 rounded-full bg-white/30"></div>
+                                <div className="w-2 h-2 rounded-full bg-white/30"></div>
+                            </div>
                         </div>
-                        <button className="text-sm font-black text-primary hover:underline underline-offset-4">Ver todo</button>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="bg-slate-50/50">
-                                    <th className="px-10 py-5 text-left text-[11px] font-black text-text-muted uppercase tracking-widest">Banca</th>
-                                    <th className="px-10 py-5 text-left text-[11px] font-black text-text-muted uppercase tracking-widest">Fecha</th>
-                                    <th className="px-10 py-5 text-left text-[11px] font-black text-text-muted uppercase tracking-widest">Monto</th>
-                                    <th className="px-10 py-5 text-left text-[11px] font-black text-text-muted uppercase tracking-widest">Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {[1, 2, 3, 4].map((i) => (
-                                    <tr key={i} className="hover:bg-slate-50/50 transition-colors">
-                                        <td className="px-10 py-6 font-bold text-text-main text-sm text-nowrap">Central de Apuestas {i}</td>
-                                        <td className="px-10 py-6 text-sm font-bold text-text-muted">12 Oct, 2023</td>
-                                        <td className="px-10 py-6 font-black text-text-main text-sm text-nowrap">RD$ 1,500.00</td>
-                                        <td className="px-10 py-6">
-                                            <span className="px-4 py-1.5 bg-green-50 text-accent-green text-[11px] font-black rounded-full uppercase tracking-tighter shadow-sm border border-green-100">
-                                                Completado
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+
+                    <div className="bg-white p-8 rounded-[40px] shadow-md border border-border">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-lg font-black text-text-main">Operaciones Top</h3>
+                            <MoreVertical size={18} className="text-text-muted cursor-pointer" />
+                        </div>
+                        <p className="text-sm text-text-muted font-bold text-center py-4">Sin historial de operaciones registradas.</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* SECOND ROW: WEEKLY PERFORMANCE & OTHER STATS */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <div className="lg:col-span-2 space-y-6">
+                    <div className="flex justify-between items-center">
+                        <h3 className="text-xl font-black text-text-main">Rendimiento Semanal</h3>
+                        <div className="flex space-x-2">
+                            <button className="p-2 rounded-full bg-white border border-border text-text-muted hover:text-primary transition-all"><ChevronDown className="rotate-90" size={18}/></button>
+                            <button className="p-2 rounded-full bg-primary text-white shadow-lg shadow-primary/20 hover:bg-indigo-700 transition-all"><ChevronDown className="-rotate-90" size={18}/></button>
+                        </div>
+                    </div>
+                    
+                    <div className="bg-white p-10 rounded-[40px] shadow-md border border-border">
+                        <h4 className="text-sm font-black text-text-main mb-8">Distribución de Ventas</h4>
+                        <div className="h-64 w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={weeklyData}>
+                                    <defs>
+                                        <linearGradient id="colorWeekly" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.2}/>
+                                            <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800, fill: '#64748b' }} dy={10} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800, fill: '#64748b' }} domain={[0, 4]} />
+                                    <Tooltip />
+                                    <Area type="monotone" dataKey="valor" stroke="#4f46e5" strokeWidth={4} fillOpacity={1} fill="url(#colorWeekly)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="space-y-10">
+                    <div className="bg-white p-10 rounded-[40px] shadow-md border border-border">
+                        <div className="flex justify-between items-center mb-8">
+                           <h3 className="text-lg font-black text-text-main">Resumen Mensual</h3>
+                           <MoreVertical size={20} className="text-text-muted cursor-pointer" />
+                        </div>
+                        <div className="h-48 w-full relative">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={staffData}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={60}
+                                        outerRadius={80}
+                                        paddingAngle={5}
+                                        dataKey="value"
+                                        stroke="none"
+                                    >
+                                        {staffData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                    </Pie>
+                                </PieChart>
+                            </ResponsiveContainer>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <span className="text-2xl font-black text-text-main">100%</span>
+                                <span className="text-[10px] font-bold text-text-muted uppercase">Meta</span>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 mt-8">
+                            <LegendItem color="#4f46e5" label="Personal" />
+                            <LegendItem color="#10b981" label="Ingresos" />
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     );
+}
+
+function FlowIndicator({ icon, label, value }) {
+    return (
+        <div className="flex items-center space-x-4">
+            {icon}
+            <div>
+                <p className="text-[10px] font-black text-text-muted uppercase tracking-wider">{label}</p>
+                <p className="text-sm font-extrabold text-text-main">{value}</p>
+            </div>
+        </div>
+    );
+}
+
+function LegendItem({ color, label }) {
+  return (
+    <div className="flex items-center space-x-2">
+      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }}></div>
+      <span className="text-[10px] font-black text-text-muted uppercase tracking-wider whitespace-nowrap">{label}</span>
+    </div>
+  );
 }
 
 function StatCard({ title, value, trend, icon: Icon, color }) {
