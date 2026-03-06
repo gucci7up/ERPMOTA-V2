@@ -19,7 +19,7 @@ export default function Configuration() {
     const fetchSettings = async () => {
         try {
             const response = await fetch('https://api-v2.salamihost.lat/api/settings', {
-                credentials: 'true'
+                credentials: 'include'
             });
             if (response.ok) {
                 const data = await response.json();

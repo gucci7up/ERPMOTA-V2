@@ -24,16 +24,19 @@ export default function Operaciones() {
         try {
             const r = await fetch(`${API}/operaciones?${params}`, { credentials: 'include' });
             const res = await r.json();
-            setRows(res.data || []);
-            setTotals(res);
-        } finally { setLoading(false); }
+            setRows(Array.isArray(res.data) ? res.data : []);
+            setTotals(res && typeof res === 'object' ? res : {});
+        } catch (e) { setRows([]); } finally { setLoading(false); }
     };
 
     useEffect(() => { fetchData(); }, [filter]);
 
     const fetchBancas = async () => {
-        const r = await fetch(`${API}/bancas`, { credentials: 'include' });
-        setBancas(await r.json());
+        try {
+            const r = await fetch(`${API}/bancas`, { credentials: 'include' });
+            const data = await r.json();
+            setBancas(Array.isArray(data) ? data : []);
+        } catch (e) { setBancas([]); }
     };
 
     const openCreate = () => { setCurrent(null); setForm({ banca_id: '', operation_date: new Date().toISOString().split('T')[0], ventas_brutas: '', premios_pagados: '', gastos_banca: '' }); setShowModal(true); };
