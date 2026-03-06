@@ -35,9 +35,15 @@ class DashboardController extends Controller
         $gastosNomina = 0;
 
         try {
-            $stmtBancas = $this->db->query("SELECT COUNT(*) FROM bancas");
+            $stmtBancas = $this->db->query("SELECT COUNT(*) FROM bancas WHERE deleted_at IS NULL");
             $totalBancas = (int) $stmtBancas->fetchColumn();
         } catch (\Exception $e) {
+            // deleted_at column doesn't exist, count without filter
+            try {
+                $stmtBancas = $this->db->query("SELECT COUNT(*) FROM bancas");
+                $totalBancas = (int) $stmtBancas->fetchColumn();
+            } catch (\Exception $e2) {
+            }
         }
 
         try {

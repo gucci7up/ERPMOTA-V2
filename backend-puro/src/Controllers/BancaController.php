@@ -21,8 +21,16 @@ class BancaController extends Controller
      */
     public function index()
     {
-        $stmt = $this->db->prepare("SELECT * FROM bancas ORDER BY id DESC");
-        $stmt->execute();
+        // Soporte para Soft Deletes de Laravel: excluir filas con deleted_at
+        try {
+            // Intentar con filtro de soft delete
+            $stmt = $this->db->prepare("SELECT * FROM bancas WHERE deleted_at IS NULL ORDER BY id DESC");
+            $stmt->execute();
+        } catch (\Exception $e) {
+            // Si deleted_at no existe, traer todo
+            $stmt = $this->db->prepare("SELECT * FROM bancas ORDER BY id DESC");
+            $stmt->execute();
+        }
         $this->jsonResponse($stmt->fetchAll());
     }
 
@@ -93,6 +101,7 @@ class BancaController extends Controller
      */
     public function destroy($id)
     {
+        // Soft delete compatible: usar DELETE físico (nuestro sistema no usa soft delete)
         $stmt = $this->db->prepare("DELETE FROM bancas WHERE id = :id");
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
 
