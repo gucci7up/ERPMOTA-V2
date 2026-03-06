@@ -104,7 +104,7 @@ export default function Configuration() {
               <p className="text-text-muted mt-1 font-medium">Configuración global e identidad visual para su organización.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="bg-white rounded-[48px] border border-border overflow-hidden p-12 shadow-sm relative">
+            <form onSubmit={handleSubmit} className="bg-white rounded-[48px] border border-border overflow-hidden p-12 shadow-md relative">
                 {message.text && (
                     <div className={`p-6 mb-8 rounded-[24px] font-bold text-sm flex items-center animate-in slide-in-from-top-4 duration-300 ${message.type === 'success' ? 'bg-green-50 text-accent-green border border-green-100' : 'bg-red-50 text-accent-red border border-red-100'}`}>
                         {message.type === 'success' ? <CheckCircle2 size={20} className="mr-3" /> : <AlertCircle size={20} className="mr-3" />}

@@ -74,7 +74,7 @@ export default function Operaciones() {
             </div>
 
             {/* Filtros */}
-            <div className="bg-white p-8 rounded-[40px] shadow-sm border border-border flex flex-wrap items-center gap-6">
+            <div className="bg-white p-8 rounded-[40px] shadow-md border border-border flex flex-wrap items-center gap-6">
                 <div className="flex items-center space-x-3 text-text-muted">
                     <Filter size={20} className="text-primary" />
                     <span className="text-[11px] font-black uppercase tracking-widest">Filtros:</span>
@@ -105,7 +105,7 @@ export default function Operaciones() {
                   { label: 'Gastos de Bancas', val: totals.total_gastos, color: 'accent-orange', icon: DollarSign },
                   { label: 'Balance Neto', val: totals.balance_neto, color: 'primary', icon: DollarSign }
                 ].map((stat, i) => (
-                    <div key={i} className="bg-white p-8 rounded-[40px] shadow-sm border border-border group hover:border-primary/20 transition-all">
+                    <div key={i} className="bg-white p-8 rounded-[40px] shadow-md border border-border group hover:border-primary/20 transition-all">
                         <div className={`w-12 h-12 rounded-2xl bg-${stat.color === 'primary' ? 'primary' : stat.color}/10 text-${stat.color === 'primary' ? 'primary' : stat.color} flex items-center justify-center mb-6`}>
                             <stat.icon size={24} />
                         </div>
@@ -117,7 +117,7 @@ export default function Operaciones() {
                 ))}
             </div>
 
-            <div className="bg-white rounded-[40px] shadow-sm border border-border overflow-hidden">
+            <div className="bg-white rounded-[40px] shadow-md border border-border overflow-hidden">
                 {loading ? (
                     <div className="flex justify-center items-center py-20">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>

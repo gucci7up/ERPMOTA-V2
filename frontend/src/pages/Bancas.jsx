@@ -158,7 +158,7 @@ export default function Bancas() {
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-[40px] shadow-sm border border-border overflow-hidden">
+            <div className="bg-white rounded-[40px] shadow-md border border-border overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>

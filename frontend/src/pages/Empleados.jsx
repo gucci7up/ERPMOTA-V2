@@ -63,7 +63,7 @@ export default function Empleados() {
                 </button>
             </div>
 
-            <div className="bg-white rounded-[40px] shadow-sm border border-border overflow-hidden">
+            <div className="bg-white rounded-[40px] shadow-md border border-border overflow-hidden">
                 {loading ? (
                     <div className="flex justify-center items-center py-20">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>

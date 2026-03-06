@@ -103,7 +103,7 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 {/* Staff applications card */}
-                <div className="bg-white p-10 rounded-[40px] shadow-sm border border-border flex flex-col items-center">
+                <div className="bg-white p-10 rounded-[40px] shadow-md border border-border flex flex-col items-center">
                     <div className="w-full flex justify-between items-center mb-8">
                        <h3 className="text-xl font-black text-text-main">Solicitudes de Personal</h3>
                        <MoreVertical size={20} className="text-text-muted cursor-pointer" />
@@ -149,7 +149,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Annual payroll summary */}
-                <div className="lg:col-span-2 bg-white p-10 rounded-[40px] shadow-sm border border-border">
+                <div className="lg:col-span-2 bg-white p-10 rounded-[40px] shadow-md border border-border">
                     <div className="w-full flex justify-between items-center mb-8">
                        <div>
                            <h3 className="text-xl font-black text-text-main">Resumen de Nómina Anual</h3>
@@ -182,7 +182,7 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 {/* Total income */}
-                <div className="bg-white p-10 rounded-[40px] shadow-sm border border-border">
+                <div className="bg-white p-10 rounded-[40px] shadow-md border border-border">
                     <div className="w-full flex justify-between items-center mb-4">
                        <h3 className="text-xl font-black text-text-main">Ingresos Totales</h3>
                        <MoreVertical size={20} className="text-text-muted cursor-pointer" />
@@ -216,7 +216,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Recent Transactions Table */}
-                <div className="lg:col-span-2 bg-white rounded-[40px] shadow-sm border border-border overflow-hidden">
+                <div className="lg:col-span-2 bg-white rounded-[40px] shadow-md border border-border overflow-hidden">
                     <div className="p-10 border-b border-border flex items-center justify-between">
                         <div>
                             <h3 className="text-xl font-black text-text-main">Transacciones Recientes</h3>
@@ -258,7 +258,7 @@ export default function Dashboard() {
 
 function StatCard({ title, value, trend, icon: Icon, color }) {
     return (
-        <div className="bg-white p-10 rounded-[40px] shadow-sm border border-border group hover:border-primary/20 transition-all hover:shadow-xl hover:shadow-slate-200/50">
+        <div className="bg-white p-10 rounded-[40px] shadow-md border border-border group hover:border-primary/30 transition-all hover:shadow-2xl hover:shadow-slate-300/50">
             <div className={`w-14 h-14 ${color.replace('text', 'bg')}/10 ${color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
                 <Icon size={28} />
             </div>

@@ -73,7 +73,7 @@ export default function Gastos() {
                   { label: 'Categoría Principal', value: gastos.length ? [...new Set(gastos.map(g => g.category))].sort((a,b) => gastos.filter(g => g.category === b).length - gastos.filter(g => g.category === a).length)[0] : 'N/A', icon: Tag, color: 'accent-blue' },
                   { label: 'Gasto Promedio', value: `RD$ ${fmt(gastos.length ? gastos.reduce((acc, g) => acc + parseFloat(g.amount || 0), 0) / gastos.length : 0)}`, icon: ArrowDownCircle, color: 'accent-red' }
                 ].map((stat, i) => (
-                  <div key={i} className="bg-white p-8 rounded-[40px] shadow-sm border border-border transition-all hover:border-primary/20">
+                  <div key={i} className="bg-white p-8 rounded-[40px] shadow-md border border-border transition-all hover:border-primary/20">
                     <div className={`w-12 h-12 rounded-2xl bg-${stat.color === 'primary' ? 'primary' : stat.color}/10 text-${stat.color === 'primary' ? 'primary' : stat.color} flex items-center justify-center mb-6`}>
                       <stat.icon size={24} />
                     </div>
@@ -83,7 +83,7 @@ export default function Gastos() {
                 ))}
             </div>
 
-            <div className="bg-white rounded-[40px] shadow-sm border border-border overflow-hidden">
+            <div className="bg-white rounded-[40px] shadow-md border border-border overflow-hidden">
                 {loading ? (
                     <div className="flex justify-center items-center py-20">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>

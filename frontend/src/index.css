@@ -11,7 +11,7 @@
   --bg-sidebar: #ffffff;
   --text-main: #0f172a;
   --text-muted: #64748b;
-  --border-color: #e2e8f0;
+  --border-color: #d1d5db; /* Más visible sobre el fondo gris */
   
   --accent-orange: #f97316;
   --accent-red: #ef4444;

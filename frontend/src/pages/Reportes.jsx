@@ -28,7 +28,7 @@ export default function Reportes() {
               <p className="text-text-muted mt-1 font-medium">Exporte los datos de su negocio para análisis profundo y contabilidad.</p>
             </div>
 
-            <div className="bg-white rounded-[48px] border border-border overflow-hidden p-12 shadow-sm relative">
+            <div className="bg-white rounded-[48px] border border-border overflow-hidden p-12 shadow-md relative">
                 {/* Decorative background element */}
                 <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none">
                   <BarChart3 size={240} className="text-primary" />

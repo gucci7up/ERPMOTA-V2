@@ -94,7 +94,7 @@ export default function Nomina() {
                   { label: 'Pagos Pendientes', value: pagos.filter(p => p.status === 'Pendiente').length.toString(), icon: Calendar, color: 'accent-red' },
                   { label: 'Sueldo Promedio', value: `RD$ ${fmt(pagos.length ? pagos.reduce((acc, p) => acc + parseFloat(p.base_salary || 0), 0) / pagos.length : 0)}`, icon: PieChart, color: 'accent-blue' }
                 ].map((stat, i) => (
-                  <div key={i} className="bg-white p-8 rounded-[40px] shadow-sm border border-border transition-all hover:border-primary/20">
+                  <div key={i} className="bg-white p-8 rounded-[40px] shadow-md border border-border transition-all hover:border-primary/20">
                     <div className={`w-12 h-12 rounded-2xl bg-${stat.color === 'primary' ? 'primary' : stat.color}/10 text-${stat.color === 'primary' ? 'primary' : stat.color} flex items-center justify-center mb-6`}>
                       <stat.icon size={24} />
                     </div>
@@ -104,7 +104,7 @@ export default function Nomina() {
                 ))}
             </div>
 
-            <div className="bg-white rounded-[40px] shadow-sm border border-border overflow-hidden">
+            <div className="bg-white rounded-[40px] shadow-md border border-border overflow-hidden">
                 {loading ? (
                     <div className="flex justify-center items-center py-20">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
