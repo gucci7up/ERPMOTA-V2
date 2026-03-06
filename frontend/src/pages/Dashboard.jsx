@@ -14,11 +14,11 @@ const staffData = [
 ];
 
 const payrollData = [
-  { name: '30 Sep', salario: 400, impuestos: 100, prestamos: 50 },
-  { name: '10 Oct', salario: 420, impuestos: 110, prestamos: 40 },
-  { name: '20 Oct', salario: 320, impuestos: 80, prestamos: 30 },
-  { name: '30 Oct', salario: 450, impuestos: 120, prestamos: 60 },
-  { name: '10 Nov', salario: 410, impuestos: 105, prestamos: 50 },
+  { name: '30 Sep', salario: 400, impuestos: 100, gastos: 50 },
+  { name: '10 Oct', salario: 420, impuestos: 110, gastos: 40 },
+  { name: '20 Oct', salario: 320, impuestos: 80, gastos: 30 },
+  { name: '30 Oct', salario: 450, impuestos: 120, gastos: 60 },
+  { name: '10 Nov', salario: 410, impuestos: 105, gastos: 50 },
 ];
 
 const incomeData = [
@@ -167,7 +167,7 @@ export default function Dashboard() {
                                 <Tooltip cursor={{ fill: 'transparent' }} />
                                 <Bar dataKey="salario" fill="#4f46e5" radius={[4, 4, 0, 0]} barSize={8} />
                                 <Bar dataKey="impuestos" fill="#ef4444" radius={[4, 4, 0, 0]} barSize={8} />
-                                <Bar dataKey="prestamos" fill="#f59e0b" radius={[4, 4, 0, 0]} barSize={8} />
+                                <Bar dataKey="gastos" fill="#f59e0b" radius={[4, 4, 0, 0]} barSize={8} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
@@ -175,7 +175,7 @@ export default function Dashboard() {
                     <div className="flex items-center space-x-6 mt-8">
                        <LegendItem color="#4f46e5" label="Salario Neto" />
                        <LegendItem color="#ef4444" label="Impuestos" />
-                       <LegendItem color="#f59e0b" label="Préstamos" />
+                       <LegendItem color="#f59e0b" label="Gastos" />
                     </div>
                 </div>
             </div>
