@@ -1,8 +1,2 @@
 [variables]
-NIXPACKS_PHP_ROOT_DIR = "."
-
-[phases.setup]
-nixPkgs = ["php82", "php82Packages.composer", "nginx"]
-
-[start]
-cmd = 'node /assets/scripts/prestart.mjs /assets/nginx.template.conf /nginx.conf && sed -i "s|try_files \\$uri \\$uri/ =404|try_files \\$uri \\$uri/ /index.php?\\$query_string|g" /nginx.conf && (php-fpm -y /assets/php-fpm.conf & nginx -c /nginx.conf)'
+NIXPACKS_PHP_ROOT_DIR = "public"
