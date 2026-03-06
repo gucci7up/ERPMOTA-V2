@@ -276,12 +276,3 @@ function StatCard({ title, value, trend, icon: Icon, color }) {
         </div>
     );
 }
-
-function LegendItem({ color, label }) {
-  return (
-    <div className="flex items-center space-x-2">
-      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
-      <span className="text-[11px] font-black text-text-muted uppercase tracking-wider">{label}</span>
-    </div>
-  );
-}
