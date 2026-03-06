@@ -46,7 +46,7 @@ export default function App() {
 
             // En una implementación real con el backend 100% acoplado se haría:
             /*
-            const response = await fetch('http://localhost:8000/api/me', { credentials: 'true' });
+            const response = await fetch('https://api-v2.salamihost.lat/api/me', { credentials: 'true' });
             if (response.ok) {
               const userData = await response.json();
               setUser(userData);
@@ -68,7 +68,7 @@ export default function App() {
     const handleLogout = async () => {
         try {
             // Destruir sesión en el backend si estuviera conectado completo
-            await fetch('http://localhost:8000/api/logout', { method: 'POST', credentials: 'true' });
+            await fetch('https://api-v2.salamihost.lat/api/logout', { method: 'POST', credentials: 'true' });
         } catch (e) { /* ignore */ }
 
         setUser(null);

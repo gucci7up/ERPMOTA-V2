@@ -17,7 +17,7 @@ export default function Dashboard() {
 
     const fetchMetrics = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/dashboard', { credentials: 'include' });
+            const response = await fetch('https://api-v2.salamihost.lat/api/dashboard', { credentials: 'include' });
             if (response.ok) {
                 const data = await response.json();
                 setMetrics(data);

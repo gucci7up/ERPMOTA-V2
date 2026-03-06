@@ -7,7 +7,7 @@ export default function Reportes() {
     });
 
     const handleDownloadExcel = () => {
-        let url = 'http://localhost:8000/api/reportes/excel';
+        let url = 'https://api-v2.salamihost.lat/api/reportes/excel';
 
         const params = new URLSearchParams();
         if (dateFilter.start) params.append('start_date', dateFilter.start);

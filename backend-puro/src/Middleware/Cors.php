@@ -8,8 +8,7 @@ class Cors
     {
         // Headers requeridos por el frontend para CORS y JSON
         // Soporte CORS para Sesiones Cruzadas (withCredentials)
-        $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '*';
-        header("Access-Control-Allow-Origin: $origin");
+        header("Access-Control-Allow-Origin: https://motaerp.salamihost.lat");
         header("Access-Control-Allow-Credentials: true");
         header("Content-Type: application/json; charset=UTF-8");
         header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");

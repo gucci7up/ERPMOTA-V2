@@ -27,7 +27,7 @@ export default function Gastos() {
     const fetchGastos = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8000/api/gastos', { credentials: 'include' });
+            const response = await fetch('https://api-v2.salamihost.lat/api/gastos', { credentials: 'include' });
             if (response.ok) {
                 const data = await response.json();
                 setGastos(data);
@@ -41,7 +41,7 @@ export default function Gastos() {
 
     const fetchBancas = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/bancas', { credentials: 'include' });
+            const response = await fetch('https://api-v2.salamihost.lat/api/bancas', { credentials: 'include' });
             if (response.ok) {
                 const data = await response.json();
                 setBancas(data.filter(b => b.status === 'active'));
@@ -82,8 +82,8 @@ export default function Gastos() {
         const payload = { ...currentGasto, monto: parseFloat(currentGasto.monto) };
 
         const url = isEditing
-            ? `http://localhost:8000/api/gastos/${currentGasto.id}`
-            : 'http://localhost:8000/api/gastos';
+            ? `https://api-v2.salamihost.lat/api/gastos/${currentGasto.id}`
+            : 'https://api-v2.salamihost.lat/api/gastos';
 
         const method = isEditing ? 'PUT' : 'POST';
 
@@ -111,7 +111,7 @@ export default function Gastos() {
         if (!window.confirm('¿Eliminar definitivamente este gasto?')) return;
 
         try {
-            const response = await fetch(`http://localhost:8000/api/gastos/${id}`, {
+            const response = await fetch(`https://api-v2.salamihost.lat/api/gastos/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
@@ -126,7 +126,7 @@ export default function Gastos() {
     const markAsPaid = async (gasto) => {
         try {
             const payload = { ...gasto, estado: 'Pagado' };
-            const response = await fetch(`http://localhost:8000/api/gastos/${gasto.id}`, {
+            const response = await fetch(`https://api-v2.salamihost.lat/api/gastos/${gasto.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',

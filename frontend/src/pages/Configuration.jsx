@@ -18,7 +18,7 @@ export default function Configuration() {
 
     const fetchSettings = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/settings', {
+            const response = await fetch('https://api-v2.salamihost.lat/api/settings', {
                 credentials: 'true'
             });
             if (response.ok) {
@@ -54,7 +54,7 @@ export default function Configuration() {
                 const formData = new FormData();
                 formData.append('logo', logoFile);
 
-                const logoRes = await fetch('http://localhost:8000/api/settings/logo', {
+                const logoRes = await fetch('https://api-v2.salamihost.lat/api/settings/logo', {
                     method: 'POST',
                     credentials: 'true',
                     body: formData
@@ -71,7 +71,7 @@ export default function Configuration() {
             }
 
             // 2. Guardar el resto de configuraciones JSON
-            const res = await fetch('http://localhost:8000/api/settings', {
+            const res = await fetch('https://api-v2.salamihost.lat/api/settings', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

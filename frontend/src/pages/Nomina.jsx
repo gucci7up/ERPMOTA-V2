@@ -28,7 +28,7 @@ export default function Nomina() {
     const fetchPagos = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8000/api/pagos-nomina', { credentials: 'include' });
+            const response = await fetch('https://api-v2.salamihost.lat/api/pagos-nomina', { credentials: 'include' });
             if (response.ok) {
                 const data = await response.json();
                 setPagos(data);
@@ -42,7 +42,7 @@ export default function Nomina() {
 
     const fetchEmpleados = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/empleados', { credentials: 'include' });
+            const response = await fetch('https://api-v2.salamihost.lat/api/empleados', { credentials: 'include' });
             if (response.ok) {
                 const data = await response.json();
                 setEmpleados(data); // El endopint ya filtra role='empleado'
@@ -81,8 +81,8 @@ export default function Nomina() {
         const payload = { ...currentPago, monto_pagado: parseFloat(currentPago.monto_pagado) };
 
         const url = isEditing
-            ? `http://localhost:8000/api/pagos-nomina/${currentPago.id}`
-            : 'http://localhost:8000/api/pagos-nomina';
+            ? `https://api-v2.salamihost.lat/api/pagos-nomina/${currentPago.id}`
+            : 'https://api-v2.salamihost.lat/api/pagos-nomina';
 
         const method = isEditing ? 'PUT' : 'POST';
 
@@ -110,7 +110,7 @@ export default function Nomina() {
         if (!window.confirm('¿Eliminar definitivamente este pago de nómina?')) return;
 
         try {
-            const response = await fetch(`http://localhost:8000/api/pagos-nomina/${id}`, {
+            const response = await fetch(`https://api-v2.salamihost.lat/api/pagos-nomina/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });

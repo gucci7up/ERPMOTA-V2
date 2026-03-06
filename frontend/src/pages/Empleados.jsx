@@ -17,7 +17,7 @@ export default function Empleados() {
     const fetchEmpleados = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8000/api/empleados', { credentials: 'include' });
+            const response = await fetch('https://api-v2.salamihost.lat/api/empleados', { credentials: 'include' });
             if (response.ok) {
                 const data = await response.json();
                 setEmpleados(data);
@@ -31,7 +31,7 @@ export default function Empleados() {
 
     const fetchBancas = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/bancas', { credentials: 'include' });
+            const response = await fetch('https://api-v2.salamihost.lat/api/bancas', { credentials: 'include' });
             if (response.ok) {
                 const data = await response.json();
                 // Filtramos solo las bancas activas para la asignación
@@ -83,8 +83,8 @@ export default function Empleados() {
         if (!payload.banca_id) payload.banca_id = null; // Enviar null explícito si está vacío
 
         const url = isEditing
-            ? `http://localhost:8000/api/empleados/${currentEmpleado.id}`
-            : 'http://localhost:8000/api/empleados';
+            ? `https://api-v2.salamihost.lat/api/empleados/${currentEmpleado.id}`
+            : 'https://api-v2.salamihost.lat/api/empleados';
 
         const method = isEditing ? 'PUT' : 'POST';
 
@@ -112,7 +112,7 @@ export default function Empleados() {
         if (!window.confirm('¿Eliminar definitivamente a este empleado?')) return;
 
         try {
-            const response = await fetch(`http://localhost:8000/api/empleados/${id}`, {
+            const response = await fetch(`https://api-v2.salamihost.lat/api/empleados/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });

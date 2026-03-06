@@ -34,7 +34,7 @@ export default function Operaciones() {
     const fetchOperaciones = async () => {
         setLoading(true);
         try {
-            let url = 'http://localhost:8000/api/operaciones';
+            let url = 'https://api-v2.salamihost.lat/api/operaciones';
             if (dateFilter.start && dateFilter.end) {
                 url += `?start_date=${dateFilter.start}&end_date=${dateFilter.end}`;
             }
@@ -53,7 +53,7 @@ export default function Operaciones() {
 
     const fetchBancas = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/bancas', { credentials: 'include' });
+            const response = await fetch('https://api-v2.salamihost.lat/api/bancas', { credentials: 'include' });
             if (response.ok) {
                 const data = await response.json();
                 setBancas(data.filter(b => b.status === 'active'));
@@ -94,8 +94,8 @@ export default function Operaciones() {
         const payload = { ...currentOp, monto: parseFloat(currentOp.monto) };
 
         const url = isEditing
-            ? `http://localhost:8000/api/operaciones/${currentOp.id}`
-            : 'http://localhost:8000/api/operaciones';
+            ? `https://api-v2.salamihost.lat/api/operaciones/${currentOp.id}`
+            : 'https://api-v2.salamihost.lat/api/operaciones';
 
         const method = isEditing ? 'PUT' : 'POST';
 
@@ -123,7 +123,7 @@ export default function Operaciones() {
         if (!window.confirm('¿Eliminar definitivamente esta operación financiera?')) return;
 
         try {
-            const response = await fetch(`http://localhost:8000/api/operaciones/${id}`, {
+            const response = await fetch(`https://api-v2.salamihost.lat/api/operaciones/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });

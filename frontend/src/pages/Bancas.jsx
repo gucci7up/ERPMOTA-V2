@@ -16,7 +16,7 @@ export default function Bancas() {
     const fetchBancas = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8000/api/bancas', { credentials: 'true' });
+            const response = await fetch('https://api-v2.salamihost.lat/api/bancas', { credentials: 'true' });
             if (response.ok) {
                 const data = await response.json();
                 setBancas(data);
@@ -53,8 +53,8 @@ export default function Bancas() {
         e.preventDefault();
 
         const url = isEditing
-            ? `http://localhost:8000/api/bancas/${currentBanca.id}`
-            : 'http://localhost:8000/api/bancas';
+            ? `https://api-v2.salamihost.lat/api/bancas/${currentBanca.id}`
+            : 'https://api-v2.salamihost.lat/api/bancas';
 
         const method = isEditing ? 'PUT' : 'POST';
 
@@ -85,7 +85,7 @@ export default function Bancas() {
         if (!window.confirm('¿Estás seguro de eliminar esta banca? Esta acción no se puede deshacer.')) return;
 
         try {
-            const response = await fetch(`http://localhost:8000/api/bancas/${id}`, {
+            const response = await fetch(`https://api-v2.salamihost.lat/api/bancas/${id}`, {
                 method: 'DELETE',
                 credentials: 'true'
             });
