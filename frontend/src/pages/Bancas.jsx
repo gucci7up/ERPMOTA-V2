@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, X, MapPin, Phone, Info, ChevronRight, MoreVertical } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, MapPin, Phone, Info, ChevronRight, MoreVertical, ChevronDown } from 'lucide-react';
 
 export default function Bancas() {
     const [bancas, setBancas] = useState([]);

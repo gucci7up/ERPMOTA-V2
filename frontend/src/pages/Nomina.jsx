@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, X, Users, Calendar, DollarSign, PieChart, CreditCard, ChevronRight, Calculator } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Users, Calendar, DollarSign, PieChart, CreditCard, ChevronRight, Calculator, ChevronDown } from 'lucide-react';
 
 const API = 'https://api-v2.salamihost.lat/api';
 const fmt = (n) => parseFloat(n || 0).toLocaleString('es-DO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });

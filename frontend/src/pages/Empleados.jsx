@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, X, User, Briefcase, Phone, Mail, DollarSign, MapPin } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, User, Briefcase, Phone, Mail, DollarSign, MapPin, ChevronDown } from 'lucide-react';
 
 const API = 'https://api-v2.salamihost.lat/api';
 
