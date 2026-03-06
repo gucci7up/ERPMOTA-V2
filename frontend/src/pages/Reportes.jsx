@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Download, Calendar, BarChart3, FileSpreadsheet, ArrowRight, Info } from 'lucide-react';
 
 export default function Reportes() {
     const [dateFilter, setDateFilter] = useState({
@@ -17,46 +18,96 @@ export default function Reportes() {
             url += '?' + params.toString();
         }
 
-        // Abre el stream PHP para desencadenar el header de descarga
         window.open(url, '_blank');
     };
 
     return (
-        <div className="font-sans max-w-4xl">
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold text-slate-800 border-l-4 border-amber-500 pl-3">Reportes Financieros</h1>
-                <p className="text-slate-500 mt-1 pl-4 text-sm">Centra de exportación global del ERP en formato Excel (CSV).</p>
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl">
+            <div>
+              <h1 className="text-3xl font-bold text-text-main">Financial Reports</h1>
+              <p className="text-text-muted mt-1">Export your business data for deep analysis and accounting.</p>
             </div>
 
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                <div className="flex flex-col md:flex-row gap-8 items-start md:items-center justify-between">
+            <div className="bg-white rounded-[40px] border border-border overflow-hidden p-12 shadow-sm relative">
+                {/* Decorative background element */}
+                <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none">
+                  <BarChart3 size={240} className="text-primary" />
+                </div>
 
-                    <div className="flex-1">
-                        <h3 className="text-lg font-bold text-slate-800 mb-2">Libro Mayor Consolidado</h3>
-                        <p className="text-sm text-slate-500 mb-6">Este reporte unifica cronológicamente todos los ingresos procedentes de operaciones, descontando los gastos variables, liquidación de gastos fijos y nómina.</p>
-
-                        <div className="grid grid-cols-2 gap-4 max-w-sm mb-6">
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wide">Desde</label>
-                                <input type="date" value={dateFilter.start} onChange={(e) => setDateFilter({ ...dateFilter, start: e.target.value })} className="px-3 py-2 border border-slate-300 rounded-lg w-full text-sm bg-slate-50" />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wide">Hasta</label>
-                                <input type="date" value={dateFilter.end} onChange={(e) => setDateFilter({ ...dateFilter, end: e.target.value })} className="px-3 py-2 border border-slate-300 rounded-lg w-full text-sm bg-slate-50" />
-                            </div>
+                <div className="relative z-10 flex flex-col lg:flex-row gap-12 items-start">
+                    <div className="flex-1 space-y-8">
+                        <div>
+                          <div className="inline-flex items-center space-x-2 px-3 py-1 bg-primary/5 text-primary rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-primary/10">
+                            <FileSpreadsheet size={14} />
+                            <span>Export Center</span>
+                          </div>
+                          <h2 className="text-3xl font-black text-text-main">Consolidated Ledger</h2>
+                          <p className="text-text-muted mt-4 leading-relaxed max-w-xl">
+                            This report unifies all income from operations, subtracting variable expenses, fixed cost settlements, and payroll. Perfect for tax preparation and monthly performance reviews.
+                          </p>
                         </div>
 
-                        <button onClick={handleDownloadExcel} className="inline-flex items-center justify-center space-x-2 bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl shadow-md font-bold transition-all transform hover:scale-105">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                            <span>Descargar Reporte Excel / CSV</span>
-                        </button>
-                    </div>
+                        <div className="space-y-6">
+                            <div className="flex items-center space-x-3 text-text-main">
+                                <Calendar size={20} className="text-primary" />
+                                <span className="font-bold text-sm uppercase tracking-widest">Select Date Range</span>
+                            </div>
+                            
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                <div className="flex-1 space-y-2">
+                                    <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1">From</label>
+                                    <input 
+                                      type="date" 
+                                      value={dateFilter.start} 
+                                      onChange={(e) => setDateFilter({ ...dateFilter, start: e.target.value })} 
+                                      className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none font-bold text-text-main shadow-inner" 
+                                    />
+                                </div>
+                                <div className="flex-1 space-y-2">
+                                    <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1">To</label>
+                                    <input 
+                                      type="date" 
+                                      value={dateFilter.end} 
+                                      onChange={(e) => setDateFilter({ ...dateFilter, end: e.target.value })} 
+                                      className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none font-bold text-text-main shadow-inner" 
+                                    />
+                                </div>
+                            </div>
 
-                    <div className="w-48 hidden md:block opacity-80">
-                        <svg className="text-amber-100 w-full h-full" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd"></path></svg>
-                    </div>
+                            <button 
+                              onClick={handleDownloadExcel} 
+                              className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 bg-primary hover:bg-indigo-700 text-white px-10 py-5 rounded-[24px] shadow-xl shadow-primary/20 font-black text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+                            >
+                                <Download size={20} strokeWidth={2.5} />
+                                <span>Export to Excel / CSV</span>
+                                <ArrowRight size={18} className="opacity-50" />
+                            </button>
+                        </div>
 
+                        <div className="flex items-start space-x-3 p-6 bg-slate-50 rounded-[24px] border border-slate-100 max-w-xl">
+                          <Info size={18} className="text-primary mt-0.5 flex-shrink-0" />
+                          <p className="text-xs text-text-muted leading-relaxed font-medium">
+                            <strong className="text-text-main">Note:</strong> The export process might take a few seconds depending on the volume of data in the selected range. Please do not close the window.
+                          </p>
+                        </div>
+                    </div>
                 </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                { title: 'Operations Detail', desc: 'Daily sales and prize breakdown.', icon: BarChart3 },
+                { title: 'Tax Summary', desc: 'Consolidated tax figures for periods.', icon: FileSpreadsheet },
+                { title: 'Audit Log', desc: 'Track all changes and manual entries.', icon: Info }
+              ].map((card, i) => (
+                <div key={i} className="bg-white p-8 rounded-[32px] border border-border shadow-sm group hover:border-primary/30 transition-all cursor-not-allowed grayscale opacity-60">
+                  <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mb-4 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                    <card.icon size={20} />
+                  </div>
+                  <h3 className="font-bold text-text-main">{card.title}</h3>
+                  <p className="text-xs text-text-muted mt-2">{card.desc}</p>
+                </div>
+              ))}
             </div>
         </div>
     );

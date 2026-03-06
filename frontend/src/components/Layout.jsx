@@ -1,116 +1,152 @@
 import { NavLink } from 'react-router-dom';
+import { 
+  LayoutDashboard, 
+  Users, 
+  Receipt, 
+  Wallet, 
+  FileText, 
+  Settings, 
+  PieChart, 
+  Box, 
+  Bell, 
+  LogOut, 
+  Calendar, 
+  Filter, 
+  Download, 
+  ChevronDown,
+  Sparkles,
+  Layers
+} from 'lucide-react';
 
 export default function Layout({ children, user, onLogout }) {
-  if (!user) {
-    return null; // O redirigir a login si estuviera en un Router real
-  }
+  if (!user) return null;
 
   const userInitials = user.name ? user.name.charAt(0).toUpperCase() : 'U';
 
   const navLinkClass = ({ isActive }) =>
-    isActive
-      ? "flex items-center space-x-3 px-4 py-3 rounded-lg bg-blue-600 text-white shadow-md shadow-blue-500/20 transition-all font-medium"
-      : "flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all font-medium";
+    `flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+      isActive
+        ? "bg-primary/10 text-primary font-bold shadow-sm"
+        : "text-text-muted hover:bg-slate-50 hover:text-text-main font-medium"
+    }`;
+
+  const navItems = [
+    { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+    { name: 'Bancas', path: '/bancas', icon: Layers },
+    { name: 'Staff', path: '/empleados', icon: Users },
+    { name: 'Operaciones', path: '/operaciones', icon: Receipt },
+    { name: 'Gastos', path: '/gastos', icon: Wallet },
+    { name: 'Nómina', path: '/nomina', icon: Box },
+    { name: 'Reportes', path: '/reportes', icon: PieChart },
+  ];
 
   return (
-    <div className="flex h-screen bg-slate-50 font-sans text-slate-800">
-
-      {/* SIDEBAR (Menú Lateral Izquierdo) */}
-      <aside className="w-64 bg-slate-900 text-white flex flex-col shadow-xl z-20">
-
-        {/* LOGO & BRANDING */}
-        <div className="h-16 flex items-center justify-center border-b border-slate-700/50 bg-slate-950/30">
-          <h1 className="text-xl font-bold tracking-widest text-blue-400">
-            ERP<span className="text-white">MOTA</span>
-          </h1>
+    <div className="flex h-screen bg-bg-main overflow-hidden font-sans">
+      
+      {/* SIDEBAR */}
+      <aside className="w-72 bg-white border-r border-border flex flex-col z-30 shadow-xl shadow-slate-200/50">
+        {/* LOGO */}
+        <div className="p-8 flex items-center space-x-3">
+          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary group transition-all hover:bg-primary hover:text-white cursor-pointer">
+             <Sparkles size={22} />
+          </div>
+          <span className="text-2xl font-black text-text-main tracking-tighter">ERPMOTA</span>
         </div>
 
-        {/* NAVEGACIÓN */}
-        <nav className="flex-1 px-3 py-6 space-y-2 overflow-y-auto">
-          {/* Dashboard */}
-          <NavLink to="/" end className={navLinkClass}>
-            <svg className="w-5 h-5 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3m10-11l1.293-1.293a1 1 0 011.414 0L21 12m-2 10v-3a1 1 0 00-1-1h-3"></path></svg>
-            <span>Dashboard</span>
-          </NavLink>
-
-          <NavLink to="/bancas" className={navLinkClass}>
-            <svg className="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-            <span>Bancas</span>
-          </NavLink>
-
-          <NavLink to="/empleados" className={navLinkClass}>
-            <svg className="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-            <span>Empleados</span>
-          </NavLink>
-
-          <NavLink to="/operaciones" className={navLinkClass}>
-            <span>💰</span>
-            Operaciones
-          </NavLink>
-          <NavLink to="/gastos" className={navLinkClass}>
-            <span>🧾</span>
-            Gastos Fijos
-          </NavLink>
-          <NavLink to="/nomina" className={navLinkClass}>
-            <svg className="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-            <span>Nómina</span>
-          </NavLink>
-
-          <NavLink to="/reportes" className={navLinkClass}>
-            <span>📊</span>
-            Reportes
-          </NavLink>
-
-          <div className="pt-4 mt-4 border-t border-slate-700/50">
-            <NavLink to="/configuracion" className={navLinkClass}>
-              <svg className="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-              <span>Configuración</span>
+        {/* NAVIGATION */}
+        <nav className="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
+          <p className="px-4 text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-4 mt-2">Main Menu</p>
+          {navItems.map((item) => (
+            <NavLink key={item.path} to={item.path} end={item.path === '/'} className={navLinkClass}>
+              <item.icon size={20} className="group-hover:scale-110 transition-transform" />
+              <span className="text-[14px]">{item.name}</span>
             </NavLink>
+          ))}
+
+          <div className="pt-6 mt-6 border-t border-slate-100">
+             <p className="px-4 text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-4">System</p>
+             <NavLink to="/configuracion" className={navLinkClass}>
+                <Settings size={20} className="group-hover:rotate-45 transition-transform duration-500" />
+                <span className="text-[14px]">Settings</span>
+             </NavLink>
           </div>
         </nav>
 
-        {/* CERRAR SESIÓN */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950/20">
-          <button
+        {/* USER ZONE */}
+        <div className="p-6 space-y-4">
+          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 group cursor-pointer hover:border-primary/20 transition-all">
+            <div className="flex items-center justify-between mb-3">
+               <div className="w-8 h-8 rounded-lg bg-accent-orange/10 text-accent-orange flex items-center justify-center font-bold text-xs">AI</div>
+               <div className="flex items-center text-[10px] font-black text-text-muted uppercase tracking-wider">
+                 <span>Pro Plan</span>
+                 <Bell size={12} className="ml-2 animate-bounce" />
+               </div>
+            </div>
+            <button className="w-full bg-white border border-border py-2 px-4 rounded-xl text-xs font-black text-text-main shadow-sm hover:shadow-md transition-all uppercase tracking-widest">
+              Manage Billing
+            </button>
+          </div>
+          
+          <button 
             onClick={onLogout}
-            className="flex items-center justify-center space-x-2 w-full px-4 py-2.5 bg-slate-800 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-slate-700 hover:shadow-lg transition-all duration-200"
+            className="flex items-center space-x-3 w-full px-4 py-3 text-text-muted hover:text-accent-red hover:bg-red-50 rounded-xl transition-all group"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-            <span>Cerrar Sesión</span>
+            <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
+            <span className="text-[14px] font-bold">Logout</span>
           </button>
         </div>
       </aside>
 
-      {/* ÁREA PRINCIPAL */}
+      {/* MAIN CONTENT AREA */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-
-        {/* TOP HEADER */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-10 shadow-sm">
-          {/* Breadcrumb / Title */}
-          <div>
-            <h2 className="text-xl font-bold text-slate-800">Panel de Control</h2>
-            <p className="text-xs text-slate-500 font-medium">Bienvenido de nuevo, visualiza tus métricas.</p>
+        
+        {/* HEADER */}
+        <header className="h-20 bg-white border-b border-border flex items-center justify-between px-10 shrink-0 z-20">
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-black text-text-main tracking-tight">Bonjour, {user.name.split(' ')[0]}!</h1>
+            <span className="text-xs font-bold text-text-muted uppercase tracking-widest mt-0.5">{new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
           </div>
 
-          {/* User Profile Info */}
-          <div className="flex items-center space-x-3 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors">
-            <span className="text-sm font-semibold text-slate-700 hidden sm:block">
-              {user.name} <span className="text-xs text-slate-400 ml-1">({user.role})</span>
-            </span>
-            <div className="w-8 h-8 rounded-full bg-blue-600 shadow-md shadow-blue-500/30 flex items-center justify-center text-white text-xs font-bold tracking-wider">
-              {userInitials}
+          <div className="flex items-center space-x-4">
+            <div className="hidden lg:flex items-center space-x-2 bg-slate-50 border border-border px-4 py-2.5 rounded-xl text-[13px] font-bold text-text-main">
+              <Calendar size={16} className="text-primary" />
+              <span>Oct 2023 Overview</span>
+              <ChevronDown size={14} className="text-text-muted" />
+            </div>
+
+            <button className="p-2.5 border border-border rounded-xl text-text-muted hover:bg-slate-50 hover:text-primary transition-all shadow-sm">
+              <Bell size={20} />
+            </button>
+            <button className="flex items-center space-x-2 px-4 py-2.5 bg-text-main text-white rounded-xl text-[13px] font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
+              <Download size={16} />
+              <span>Quick Export</span>
+            </button>
+
+            <div className="h-8 w-px bg-border mx-2"></div>
+
+            <div className="flex items-center space-x-3 cursor-pointer group">
+              <div className="flex flex-col items-end">
+                <span className="text-sm font-black text-text-main leading-none group-hover:text-primary transition-colors">{user.name}</span>
+                <span className="text-[10px] font-black text-text-muted uppercase tracking-tighter mt-1">{user.role || 'Administrator'}</span>
+              </div>
+              <div className="w-10 h-10 rounded-2xl bg-primary/10 border-2 border-white overflow-hidden flex items-center justify-center text-primary font-black shadow-lg shadow-primary/10 group-hover:scale-105 transition-transform">
+                {userInitials}
+              </div>
             </div>
           </div>
         </header>
 
-        {/* CONTENIDO DINÁMICO (Vistas de React) */}
-        <div className="flex-1 overflow-auto p-8 bg-slate-50 relative">
-          {/* Fondo decorativo sutil */}
-          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-blue-100/40 blur-3xl pointer-events-none"></div>
-
-          <div className="relative z-10">
+        {/* CONTENT */}
+        <div className="flex-1 overflow-y-auto p-10 bg-bg-main custom-scrollbar">
+          <div className="max-w-[1600px] mx-auto">
             {children}
           </div>
+          
+          <footer className="mt-20 pb-10 text-center">
+            <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] opacity-40">
+              &copy; 2026 ERPMOTA V2 &bull; PRECISION & PERFORMANCE
+            </p>
+          </footer>
         </div>
       </main>
 

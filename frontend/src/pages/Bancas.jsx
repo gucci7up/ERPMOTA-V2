@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Plus, Edit2, Trash2, X, MapPin, Phone, Info, ChevronRight, MoreVertical } from 'lucide-react';
 
 export default function Bancas() {
     const [bancas, setBancas] = useState([]);
@@ -7,7 +8,7 @@ export default function Bancas() {
     // Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [currentBanca, setCurrentBanca] = useState({ id: null, name: '', address: '', phone: '', status: 'active' });
+    const [currentBanca, setCurrentBanca] = useState({ id: null, name: '', address: '', phone: '', status: 'Activa' });
 
     useEffect(() => {
         fetchBancas();
@@ -34,14 +35,14 @@ export default function Bancas() {
             setCurrentBanca(banca);
         } else {
             setIsEditing(false);
-            setCurrentBanca({ id: null, name: '', address: '', phone: '', status: 'active' });
+            setCurrentBanca({ id: null, name: '', address: '', phone: '', status: 'Activa' });
         }
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setCurrentBanca({ id: null, name: '', address: '', phone: '', status: 'active' });
+        setCurrentBanca({ id: null, name: '', address: '', phone: '', status: 'Activa' });
     };
 
     const handleInputChange = (e) => {
@@ -69,7 +70,7 @@ export default function Bancas() {
             });
 
             if (response.ok) {
-                fetchBancas(); // Recargar la lista
+                fetchBancas();
                 handleCloseModal();
             } else {
                 const err = await response.json();
@@ -100,67 +101,129 @@ export default function Bancas() {
     };
 
     return (
-        <div className="font-sans">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Header View */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-800 border-l-4 border-blue-600 pl-3 block">Gestión de Bancas</h1>
-                    <p className="text-slate-500 mt-1 pl-4 text-sm">Administra las sucursales o bancas del sistema ERP.</p>
+                    <h1 className="text-3xl font-bold text-text-main leading-tight">Locations & Branches</h1>
+                    <p className="text-text-muted mt-1">Manage all your physical locations and their operational status.</p>
                 </div>
                 <button
                     onClick={() => handleOpenModal()}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg shadow-md shadow-blue-500/20 flex items-center gap-2 transition-colors font-medium text-sm"
+                    className="bg-primary hover:bg-indigo-700 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-lg shadow-primary/20 transition-all flex items-center space-x-2 whitespace-nowrap"
                 >
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                    Nueva Banca
+                    <Plus size={18} />
+                    <span>Create Location</span>
                 </button>
             </div>
 
-            {/* Tabla */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            {/* Grid for Stats or Info - Optional but adds to premium feel */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white p-6 rounded-[32px] border border-border">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 rounded-2xl bg-accent-blue/10 text-accent-blue flex items-center justify-center">
+                      <MapPin size={24} />
+                    </div>
+                    <div>
+                      <span className="text-2xl font-bold text-text-main">{bancas.length}</span>
+                      <p className="text-xs text-text-muted font-bold uppercase tracking-wider">Total Locations</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white p-6 rounded-[32px] border border-border">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 rounded-2xl bg-accent-green/10 text-accent-green flex items-center justify-center">
+                      <div className="w-3 h-3 rounded-full bg-accent-green animate-pulse"></div>
+                    </div>
+                    <div>
+                      <span className="text-2xl font-bold text-text-main">
+                        {bancas.filter(b => b.status === 'Activa' || b.status === 'active').length}
+                      </span>
+                      <p className="text-xs text-text-muted font-bold uppercase tracking-wider">Active Branches</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white p-6 rounded-[32px] border border-border flex items-center justify-between group cursor-pointer hover:bg-slate-50 transition-colors">
+                   <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 rounded-2xl bg-accent-purple/10 text-accent-purple flex items-center justify-center">
+                        <Info size={24} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-text-main">System Health</p>
+                        <p className="text-xs text-text-muted">All terminals online</p>
+                      </div>
+                   </div>
+                   <ChevronRight size={20} className="text-text-muted group-hover:translate-x-1 transition-transform" />
+                </div>
+            </div>
+
+            {/* Table */}
+            <div className="bg-white rounded-[32px] border border-border overflow-hidden p-8 shadow-sm">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left">
                         <thead>
-                            <tr className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
-                                <th className="px-6 py-4 font-semibold">ID</th>
-                                <th className="px-6 py-4 font-semibold">Nombre</th>
-                                <th className="px-6 py-4 font-semibold">Dirección</th>
-                                <th className="px-6 py-4 font-semibold">Teléfono</th>
-                                <th className="px-6 py-4 font-semibold text-center">Estado</th>
-                                <th className="px-6 py-4 font-semibold text-right">Acciones</th>
+                            <tr className="text-xs font-bold text-text-muted uppercase tracking-wider border-b border-slate-50">
+                                <th className="pb-4 px-4">Location Name</th>
+                                <th className="pb-4 px-4">Address / Contact</th>
+                                <th className="pb-4 px-4">Status</th>
+                                <th className="pb-4 px-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 text-sm">
+                        <tbody className="text-sm">
                             {loading ? (
                                 <tr>
-                                    <td colSpan="6" className="px-6 py-8 text-center text-slate-400">
-                                        <svg className="animate-spin h-6 w-6 mx-auto text-blue-500 mb-2" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                        Cargando bancas...
+                                    <td colSpan="4" className="py-12 text-center">
+                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                                        <p className="mt-4 text-text-muted font-medium">Loading branch records...</p>
                                     </td>
                                 </tr>
                             ) : bancas.length === 0 ? (
                                 <tr>
-                                    <td colSpan="6" className="px-6 py-8 text-center text-slate-400">No hay bancas registradas.</td>
+                                    <td colSpan="4" className="py-12 text-center">
+                                      <p className="text-text-muted font-medium">No locations registered in the system.</p>
+                                    </td>
                                 </tr>
                             ) : (
                                 bancas.map((banca) => (
-                                    <tr key={banca.id} className="hover:bg-slate-50/80 transition-colors">
-                                        <td className="px-6 py-4 font-medium text-slate-500">#{banca.id}</td>
-                                        <td className="px-6 py-4 font-semibold text-slate-800">{banca.name}</td>
-                                        <td className="px-6 py-4 text-slate-600 truncate max-w-[200px]">{banca.address || '-'}</td>
-                                        <td className="px-6 py-4 text-slate-600">{banca.phone || '-'}</td>
-                                        <td className="px-6 py-4 text-center">
-                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${banca.status === 'Activa' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                    <tr key={banca.id} className="group hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
+                                        <td className="py-5 px-4">
+                                            <div className="flex items-center space-x-3">
+                                                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
+                                                    {banca.name.charAt(0)}
+                                                </div>
+                                                <div className="flex flex-col">
+                                                  <span className="font-bold text-text-main">{banca.name}</span>
+                                                  <span className="text-xs text-text-muted font-medium">ID: #{banca.id}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="py-5 px-4">
+                                            <div className="flex flex-col">
+                                                <span className="text-text-main font-medium">{banca.address || 'No address provided'}</span>
+                                                <div className="flex items-center text-xs text-text-muted mt-1">
+                                                  <Phone size={12} className="mr-1" />
+                                                  <span>{banca.phone || 'No phone'}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="py-5 px-4">
+                                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                                              (banca.status === 'Activa' || banca.status === 'active') 
+                                                ? 'bg-green-50 text-accent-green' 
+                                                : 'bg-red-50 text-accent-red'
+                                            }`}>
                                                 {banca.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right flex justify-end gap-3">
-                                            <button onClick={() => handleOpenModal(banca)} className="text-blue-600 hover:text-blue-800 bg-blue-50 p-1.5 rounded-md hover:bg-blue-100 transition-colors">
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                            </button>
-                                            <button onClick={() => handleDelete(banca.id)} className="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded-md hover:bg-red-100 transition-colors">
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                            </button>
+                                        <td className="py-5 px-4">
+                                            <div className="flex justify-end space-x-2">
+                                                <button onClick={() => handleOpenModal(banca)} className="p-2 text-text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-all">
+                                                    <Edit2 size={16} />
+                                                </button>
+                                                <button onClick={() => handleDelete(banca.id)} className="p-2 text-text-muted hover:text-accent-red hover:bg-red-50 rounded-lg transition-all">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
@@ -172,45 +235,50 @@ export default function Bancas() {
 
             {/* Modal CRUD Bancas */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={handleCloseModal}></div>
-                    <div className="relative bg-white rounded-xl shadow-xl w-full max-w-lg border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                        <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                            <h3 className="text-lg font-bold text-slate-800">{isEditing ? 'Editar Banca' : 'Nueva Banca'}</h3>
-                            <button onClick={handleCloseModal} className="text-slate-400 hover:text-slate-600">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                            </button>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+                    <div className="fixed inset-0 bg-text-main/20 backdrop-blur-sm" onClick={handleCloseModal}></div>
+                    <div className="relative bg-white rounded-[40px] shadow-2xl w-full max-w-lg border border-border overflow-hidden p-10">
+                        <button 
+                          onClick={handleCloseModal}
+                          className="absolute top-8 right-8 text-text-muted hover:text-text-main transition-colors p-2 hover:bg-slate-50 rounded-full"
+                        >
+                          <X size={24} />
+                        </button>
+
+                        <div className="mb-8">
+                             <h3 className="text-3xl font-bold text-text-main">{isEditing ? 'Edit Location' : 'New Location'}</h3>
+                             <p className="text-text-muted">Enter the details of the physical branch.</p>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-sm font-semibold text-slate-700 mb-1">Nombre</label>
-                                <input type="text" name="name" required value={currentBanca.name} onChange={handleInputChange} className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej. Banca Principal" />
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div className="relative">
+                                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2 ml-1">Branch Name</label>
+                                <input type="text" name="name" required value={currentBanca.name} onChange={handleInputChange} className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" placeholder="e.g. Main Plaza" />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-semibold text-slate-700 mb-1">Dirección</label>
-                                <input type="text" name="address" value={currentBanca.address} onChange={handleInputChange} className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej. Av. Central #123" />
+                            <div className="relative">
+                                <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2 ml-1">Physical Address</label>
+                                <input type="text" name="address" value={currentBanca.address} onChange={handleInputChange} className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" placeholder="e.g. 123 Central Ave" />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-1">Teléfono</label>
-                                    <input type="text" name="phone" value={currentBanca.phone} onChange={handleInputChange} className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej. 809-555-1234" />
+                                    <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2 ml-1">Contact Phone</label>
+                                    <input type="text" name="phone" value={currentBanca.phone} onChange={handleInputChange} className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none" placeholder="809-XXX-XXXX" />
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-semibold text-slate-700 mb-1">Estado</label>
-                                    <select name="status" value={currentBanca.status} onChange={handleInputChange} className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <div className="relative">
+                                    <label className="block text-xs font-bold text-text-muted uppercase tracking-wider mb-2 ml-1">Status</label>
+                                    <select name="status" value={currentBanca.status} onChange={handleInputChange} className="w-full bg-slate-50 border-none rounded-2xl px-4 py-3.5 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none appearance-none cursor-pointer">
                                         <option value="active">Activa</option>
                                         <option value="inactive">Inactiva</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div className="pt-4 mt-6 border-t border-slate-100 flex justify-end gap-3">
-                                <button type="button" onClick={handleCloseModal} className="px-4 py-2 font-medium text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">Cancelar</button>
-                                <button type="submit" className="px-4 py-2 font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm shadow-blue-500/30 transition-colors">
-                                    {isEditing ? 'Guardar Cambios' : 'Crear Banca'}
+                            <div className="pt-6 flex gap-4">
+                                <button type="button" onClick={handleCloseModal} className="flex-1 px-4 py-4 rounded-2xl text-sm font-bold border border-border text-text-main hover:bg-slate-50 transition-colors">Cancel</button>
+                                <button type="submit" className="flex-[2] bg-primary text-white px-4 py-4 rounded-2xl text-sm font-bold shadow-lg shadow-primary/20 hover:bg-indigo-700 transition-all">
+                                    {isEditing ? 'Save branch changes' : 'Create location'}
                                 </button>
                             </div>
                         </form>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Mail, Lock, LogIn, AlertCircle, Loader2, Sparkles } from 'lucide-react';
 
 export default function Login({ onLoginSuccess }) {
     const [email, setEmail] = useState('');
@@ -14,13 +15,11 @@ export default function Login({ onLoginSuccess }) {
         setLoading(true);
 
         try {
-            // Petición al backend PHP
             const response = await fetch('https://api-v2.salamihost.lat/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                // credentials: 'include' asegura que la cookie PHPSESSID viaje ida y vuelta
                 credentials: 'include',
                 body: JSON.stringify({ email, password })
             });
@@ -28,119 +27,142 @@ export default function Login({ onLoginSuccess }) {
             const data = await response.json();
 
             if (response.ok) {
-                // Notificamos al App.jsx para actualizar la sesión en memoria
                 if (onLoginSuccess) {
                     onLoginSuccess(data.user);
                 }
-
-                // Redirección inmaculada usando react-router-dom
                 navigate('/', { replace: true });
             } else {
-                setError(data.error || 'Credenciales inválidas');
+                setError(data.error || 'Invalid credentials');
             }
         } catch (err) {
             console.error(err);
-            setError('Error de conexión con el servidor. Verifica que el Backend esté corriendo.');
+            setError('Server connection error. Please try again later.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="flex justify-center">
-                    <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 transform rotate-3 hover:rotate-6 transition-transform">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                    </div>
-                </div>
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-white tracking-widest">
-                    ERP<span className="text-blue-500">MOTA</span>
-                </h2>
-                <p className="mt-2 text-center text-sm text-slate-400 font-medium">
-                    Inicia sesión para acceder al panel de control
-                </p>
-            </div>
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 font-sans">
+            <div className="w-full max-w-5xl bg-white rounded-[48px] shadow-2xl shadow-slate-200/60 overflow-hidden flex flex-col md:flex-row border border-border min-h-[600px]">
+                
+                {/* Left Side: Branding/Visual */}
+                <div className="md:w-1/2 bg-primary p-12 flex flex-col justify-between relative overflow-hidden text-white">
+                  {/* Decorative Elements */}
+                  <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                    <div className="absolute -top-24 -left-24 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse" />
+                    <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-400 rounded-full blur-3xl" />
+                  </div>
 
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-slate-800/80 backdrop-blur-sm py-8 px-4 shadow-2xl shadow-blue-900/20 sm:rounded-2xl sm:px-10 border border-slate-700/50">
+                  <div className="relative z-10 flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30">
+                      <Sparkles size={24} className="text-white" />
+                    </div>
+                    <span className="text-2xl font-black tracking-tight">ERPMOTA</span>
+                  </div>
+
+                  <div className="relative z-10">
+                    <h1 className="text-5xl font-black leading-tight">Modern Business <br/>Intelligence.</h1>
+                    <p className="mt-6 text-indigo-100 text-lg font-medium opacity-80 max-w-sm">
+                      Streamline your financial operations with our next-generation ERP platform. Designed for precision and speed.
+                    </p>
+                  </div>
+
+                  <div className="relative z-10 flex items-center space-x-4">
+                    <div className="flex -space-x-3">
+                      {[1,2,3,4].map(i => (
+                        <div key={i} className="w-10 h-10 rounded-full border-2 border-primary bg-slate-200 overflow-hidden">
+                          <img src={`https://i.pravatar.cc/150?u=${i}`} alt="user" className="w-full h-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-sm font-bold text-indigo-50">Trusted by 500+ teams</p>
+                  </div>
+                </div>
+
+                {/* Right Side: Login Form */}
+                <div className="md:w-1/2 p-12 md:p-20 flex flex-col justify-center">
+                    <div className="mb-10">
+                      <h2 className="text-3xl font-black text-text-main">Welcome Back</h2>
+                      <p className="text-text-muted mt-2 font-medium">Please enter your details to access your account.</p>
+                    </div>
 
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         {error && (
-                            <div className="animate-in fade-in slide-in-from-top-2 bg-red-500/10 border border-red-500/30 rounded-lg p-3 text-sm text-red-400 text-center flex items-center justify-center gap-2">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <div className="animate-in fade-in slide-in-from-top-2 bg-red-50 border border-red-100 rounded-2xl p-4 text-sm text-accent-red font-bold flex items-center">
+                                <AlertCircle size={18} className="mr-3 flex-shrink-0" />
                                 {error}
                             </div>
                         )}
 
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-300">
-                                Correo Electrónico
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-text-muted uppercase tracking-[0.2em] ml-1">
+                                Email Address
                             </label>
-                            <div className="mt-1.5 relative rounded-md shadow-sm">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                                    </svg>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-text-muted group-focus-within:text-primary transition-colors">
+                                    <Mail size={18} />
                                 </div>
                                 <input
                                     type="email"
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="block w-full pl-10 pr-3 py-2.5 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm transition-all shadow-inner"
+                                    className="block w-full pl-12 pr-5 py-4 bg-slate-50 border-none rounded-2xl text-text-main font-bold placeholder-slate-400 ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none"
                                     placeholder="admin@erpmota.com"
                                 />
                             </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-300">
-                                Contraseña
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-text-muted uppercase tracking-[0.2em] ml-1">
+                                Password
                             </label>
-                            <div className="mt-1.5 relative rounded-md shadow-sm">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                    </svg>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-text-muted group-focus-within:text-primary transition-colors">
+                                    <Lock size={18} />
                                 </div>
                                 <input
                                     type="password"
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="block w-full pl-10 pr-3 py-2.5 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm transition-all shadow-inner"
+                                    className="block w-full pl-12 pr-5 py-4 bg-slate-50 border-none rounded-2xl text-text-main font-bold placeholder-slate-400 ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none"
                                     placeholder="••••••••"
                                     autoComplete="current-password"
                                 />
                             </div>
                         </div>
 
-                        <div className="pt-2">
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-slate-900 transition-all disabled:opacity-70 disabled:cursor-not-allowed group"
-                            >
-                                {loading ? (
-                                    <>
-                                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Iniciando sesión...
-                                    </>
-                                ) : (
-                                    <>
-                                        Entrar al Sistema
-                                        <svg className="w-4 h-4 opacity-70 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                        </svg>
-                                    </>
-                                )}
-                            </button>
+                        <div className="flex items-center justify-between py-2">
+                          <label className="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" className="w-4 h-4 rounded text-primary focus:ring-primary border-border" />
+                            <span className="text-sm font-bold text-text-muted">Remember me</span>
+                          </label>
+                          <a href="#" className="text-sm font-black text-primary hover:text-indigo-700 transition-colors">Forgot password?</a>
                         </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full flex justify-center items-center space-x-3 py-4 px-6 bg-primary hover:bg-indigo-700 text-white rounded-2xl shadow-xl shadow-primary/20 font-black text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:hover:scale-100 group"
+                        >
+                            {loading ? (
+                                <Loader2 size={20} className="animate-spin" />
+                            ) : (
+                                <>
+                                  <span>Sign in to System</span>
+                                  <LogIn size={20} className="group-hover:translate-x-1 transition-transform" />
+                                </>
+                            )}
+                        </button>
                     </form>
+
+                    <div className="mt-12 pt-8 border-t border-border text-center">
+                      <p className="text-sm text-text-muted font-medium">
+                        Don't have an account? <a href="#" className="text-primary font-black hover:underline underline-offset-4">Contact Support</a>
+                      </p>
+                    </div>
                 </div>
             </div>
         </div>

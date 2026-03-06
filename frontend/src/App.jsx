@@ -1,21 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Loader2, AlertTriangle, RefreshCw } from 'lucide-react';
 
-// Error Boundary para mostrar errores en vez de pantalla blanca
+// Error Boundary for a premium error state
 class ErrorBoundary extends React.Component {
     constructor(props) { super(props); this.state = { hasError: false, error: null }; }
     static getDerivedStateFromError(error) { return { hasError: true, error }; }
     render() {
         if (this.state.hasError) {
             return (
-                <div style={{ padding: 32, fontFamily: 'monospace', background: '#1e293b', color: '#f87171', minHeight: '100vh' }}>
-                    <h2 style={{ color: '#fbbf24', marginBottom: 12 }}>⚠️ Error de Renderizado React</h2>
-                    <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', background: '#0f172a', padding: 16, borderRadius: 8 }}>
-                        {this.state.error?.toString()}{'\n\n'}{this.state.error?.stack}
-                    </pre>
-                    <button onClick={() => window.location.reload()} style={{ marginTop: 16, background: '#3b82f6', color: '#fff', border: 'none', padding: '8px 20px', borderRadius: 6, cursor: 'pointer' }}>
-                        Recargar
-                    </button>
+                <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 font-sans">
+                    <div className="max-w-md w-full bg-white rounded-[40px] shadow-2xl p-12 text-center border border-border">
+                        <div className="w-20 h-20 bg-red-50 text-accent-red rounded-3xl flex items-center justify-center mx-auto mb-8">
+                          <AlertTriangle size={40} />
+                        </div>
+                        <h2 className="text-2xl font-black text-text-main mb-4">Internal System Error</h2>
+                        <p className="text-text-muted mb-8 leading-relaxed font-medium">
+                          Something went wrong while rendering this page. Our technical team has been notified.
+                        </p>
+                        <div className="bg-slate-50 rounded-2xl p-4 mb-8 text-left overflow-auto max-h-40 border border-slate-100">
+                          <pre className="text-[10px] text-slate-500 font-mono leading-tight">
+                            {this.state.error?.toString()}
+                          </pre>
+                        </div>
+                        <button 
+                          onClick={() => window.location.reload()} 
+                          className="w-full flex items-center justify-center space-x-2 bg-primary hover:bg-indigo-700 text-white py-4 rounded-2xl font-black text-sm transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                            <RefreshCw size={18} />
+                            <span>Reload Application</span>
+                        </button>
+                    </div>
                 </div>
             );
         }
@@ -23,10 +38,10 @@ class ErrorBoundary extends React.Component {
     }
 }
 
-// Importar Componentes Compartidos
+// Import Shared Components
 import Layout from './components/Layout';
 
-// Importar Páginas (Vistas)
+// Import Pages
 import Login from './pages/Login';
 import Bancas from './pages/Bancas';
 import Empleados from './pages/Empleados';
@@ -37,12 +52,8 @@ import Dashboard from './pages/Dashboard';
 import Reportes from './pages/Reportes';
 import Configuration from './pages/Configuration';
 
-/**
- * Rutas Protegidas (Requieren Auth)
- */
 const ProtectedRoute = ({ user, children }) => {
     if (!user) {
-        // Si no hay sesión iniciada, redirigir al login
         return <Navigate to="/login" replace />;
     }
     return children;
@@ -52,44 +63,31 @@ export default function App() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Al montar la app, verifica la sesión
     useEffect(() => {
         checkSession();
     }, []);
 
     const checkSession = async () => {
         try {
-            // Intentamos recuperar la sesión actual. 
-            // Por los momentos validamos simulando la lectura local de auth state (simplificado)
             const storedUser = localStorage.getItem('erp_user');
             if (storedUser) {
                 setUser(JSON.parse(storedUser));
             }
-
-            // En una implementación real con el backend 100% acoplado se haría:
-            /*
-            const response = await fetch('https://api-v2.salamihost.lat/api/me', { credentials: 'true' });
-            if (response.ok) {
-              const userData = await response.json();
-              setUser(userData);
-            }
-            */
         } catch (error) {
             console.error('Error checking session', error);
         } finally {
-            setLoading(false);
+            // Artificial delay for premium feel loading (optional, but makes it feel "loaded")
+            setTimeout(() => setLoading(false), 800);
         }
     };
 
     const handleLoginSuccess = (userData) => {
         setUser(userData);
-        localStorage.setItem('erp_user', JSON.stringify(userData)); // Guardamos localmente para persistencia simplificada
-        // El reac-router hará re-render y lo mandará al Layout protegido
+        localStorage.setItem('erp_user', JSON.stringify(userData));
     };
 
     const handleLogout = async () => {
         try {
-            // Destruir sesión en el backend si estuviera conectado completo
             await fetch('https://api-v2.salamihost.lat/api/logout', { method: 'POST', credentials: 'true' });
         } catch (e) { /* ignore */ }
 
@@ -98,14 +96,27 @@ export default function App() {
     };
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">Cargando sistema...</div>;
+        return (
+          <div className="min-h-screen bg-white flex flex-col items-center justify-center font-sans">
+              <div className="relative">
+                <div className="w-24 h-24 bg-primary/5 rounded-[32px] animate-pulse flex items-center justify-center">
+                  <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              </div>
+              <h2 className="mt-8 text-xl font-black text-text-main tracking-tight animate-pulse uppercase">ERPMOTA</h2>
+              <div className="mt-4 flex items-center space-x-1">
+                <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                <div className="w-1 h-1 bg-primary rounded-full animate-bounce"></div>
+              </div>
+          </div>
+        );
     }
 
     return (
         <ErrorBoundary>
             <Router>
                 <Routes>
-                    {/* RUTA PÚBLICA: Login */}
                     <Route
                         path="/login"
                         element={
@@ -113,14 +124,12 @@ export default function App() {
                         }
                     />
 
-                    {/* RUTAS PRIVADAS: Cascarón del Sistema (Layout) */}
                     <Route
                         path="/*"
                         element={
                             <ProtectedRoute user={user}>
                                 <Layout user={user} onLogout={handleLogout}>
                                     <Routes>
-                                        {/* Rutas Internas Anidadas */}
                                         <Route path="/" element={<Dashboard />} />
                                         <Route path="/bancas" element={<Bancas />} />
                                         <Route path="/empleados" element={<Empleados />} />
@@ -129,8 +138,6 @@ export default function App() {
                                         <Route path="/nomina" element={<Nomina />} />
                                         <Route path="/reportes" element={<Reportes />} />
                                         <Route path="/configuracion" element={<Configuration />} />
-
-                                        {/* Fallback para 404 interno */}
                                         <Route path="*" element={<Navigate to="/" replace />} />
                                     </Routes>
                                 </Layout>

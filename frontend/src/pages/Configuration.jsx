@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Save, Upload, Building2, Globe, CheckCircle2, AlertCircle, Image as ImageIcon, X } from 'lucide-react';
 
 export default function Configuration() {
     const [settings, setSettings] = useState({
@@ -11,7 +12,6 @@ export default function Configuration() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ text: '', type: '' });
 
-    // Cargar configuraciones iniciales
     useEffect(() => {
         fetchSettings();
     }, []);
@@ -47,7 +47,6 @@ export default function Configuration() {
         setMessage({ text: '', type: '' });
 
         try {
-            // 1. Si hay un archivo nuevo, lo subimos primero
             let currentSettings = { ...settings };
 
             if (logoFile) {
@@ -66,11 +65,10 @@ export default function Configuration() {
                     setSettings(prev => ({ ...prev, logo: logoData.url }));
                 } else {
                     const lData = await logoRes.json();
-                    throw new Error(lData.error || 'Error al subir el logo');
+                    throw new Error(lData.error || 'Error uploading logo');
                 }
             }
 
-            // 2. Guardar el resto de configuraciones JSON
             const res = await fetch('https://api-v2.salamihost.lat/api/settings', {
                 method: 'POST',
                 headers: {
@@ -84,139 +82,148 @@ export default function Configuration() {
             });
 
             if (res.ok) {
-                setMessage({ text: 'Configuraciones guardadas correctamente', type: 'success' });
-                setLogoFile(null); // Resetear el input file tras éxito
+                setMessage({ text: 'Settings updated successfully', type: 'success' });
+                setLogoFile(null);
             } else {
-                throw new Error('Error al guardar datos');
+                throw new Error('Error saving data');
             }
 
         } catch (error) {
             console.error(error);
-            setMessage({ text: error.message || 'Error de conexión', type: 'error' });
+            setMessage({ text: error.message || 'Connection error', type: 'error' });
         } finally {
             setLoading(false);
-            // Ocultar mensaje después de unos segundos
             setTimeout(() => setMessage({ text: '', type: '' }), 5000);
         }
     };
 
     return (
-        <div className="max-w-4xl mx-auto my-8 font-sans">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-slate-900 border-l-4 border-blue-600 pl-4">Ajustes del Sistema</h1>
-                <p className="text-slate-500 mt-2 pl-5">Administra la información pública y moneda de la empresa.</p>
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl">
+            <div>
+              <h1 className="text-3xl font-bold text-text-main">System Settings</h1>
+              <p className="text-text-muted mt-1">Global configuration and branding for your organization.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100">
-
+            <form onSubmit={handleSubmit} className="bg-white rounded-[40px] border border-border overflow-hidden p-12 shadow-sm relative">
                 {message.text && (
-                    <div className={`p-4 mb-6 rounded-lg font-medium text-sm flex items-center shadow-sm ${message.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-                        <svg className="w-5 h-5 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            {message.type === 'success' ?
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /> :
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            }
-                        </svg>
+                    <div className={`p-6 mb-8 rounded-[24px] font-bold text-sm flex items-center animate-in slide-in-from-top-4 duration-300 ${message.type === 'success' ? 'bg-green-50 text-accent-green border border-green-100' : 'bg-red-50 text-accent-red border border-red-100'}`}>
+                        {message.type === 'success' ? <CheckCircle2 size={20} className="mr-3" /> : <AlertCircle size={20} className="mr-3" />}
                         {message.text}
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-                    {/* Lado Izquierdo: Formularios Texto */}
-                    <div className="space-y-6">
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                Nombre de la Empresa
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div className="space-y-8">
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center">
+                                <Building2 size={14} className="mr-2" /> Company Identity
                             </label>
                             <input
                                 type="text"
                                 name="company_name"
                                 value={settings.company_name}
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-inner text-slate-800"
-                                placeholder="Ej. Mi ERP S.A."
+                                className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none font-bold text-text-main"
+                                placeholder="e.g. Orlando Enterprises S.A."
                                 required
                             />
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                Moneda del Sistema
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center">
+                                <Globe size={14} className="mr-2" /> Currency System
                             </label>
                             <select
                                 name="system_currency"
                                 value={settings.system_currency}
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-slate-800"
+                                className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm ring-1 ring-border focus:ring-2 focus:ring-primary transition-all outline-none font-bold text-text-main appearance-none cursor-pointer"
                             >
-                                <option value="USD">Dólares (USD)</option>
-                                <option value="DOP">Pesos Dominicanos (DOP)</option>
-                                <option value="EUR">Euros (EUR)</option>
-                                <option value="MXN">Pesos Mexicanos (MXN)</option>
+                                <option value="USD">United States Dollar (USD)</option>
+                                <option value="DOP">Dominican Peso (DOP)</option>
+                                <option value="EUR">Euro (EUR)</option>
+                                <option value="MXN">Mexican Peso (MXN)</option>
                             </select>
                         </div>
                     </div>
 
-                    {/* Lado Derecho: Logo Upload o Preview */}
-                    <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col items-center justify-center relative shadow-inner">
-
-                        <h3 className="text-sm font-semibold text-slate-700 w-full text-center border-b border-slate-200 pb-3 mb-4">
-                            Logotipo Actual
-                        </h3>
-
-                        <div className="h-40 w-full flex items-center justify-center bg-white rounded-lg border border-slate-300 overflow-hidden relative shadow-sm mb-6 group cursor-pointer" onClick={() => document.getElementById('logoInput').click()}>
+                    <div className="space-y-4">
+                        <label className="text-xs font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center">
+                            <ImageIcon size={14} className="mr-2" /> Visual Identity
+                        </label>
+                        
+                        <div 
+                          className="h-56 w-full flex flex-col items-center justify-center bg-slate-50 rounded-[32px] border-2 border-dashed border-border overflow-hidden relative group cursor-pointer hover:border-primary/50 transition-all hover:bg-slate-100/50"
+                          onClick={() => document.getElementById('logoInput').click()}
+                        >
                             {settings.logo ? (
                                 <img
-                                    src={`http://localhost:8000${settings.logo}`}
-                                    alt="Logo Empresa"
-                                    className="max-h-full max-w-full object-contain p-2"
+                                    src={`https://api-v2.salamihost.lat${settings.logo}`}
+                                    alt="Brand Logo"
+                                    className="max-h-32 max-w-[80%] object-contain"
                                 />
                             ) : (
-                                <span className="text-slate-400 text-sm font-medium flex flex-col items-center">
-                                    <svg className="w-8 h-8 mb-2 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    Sin logo definido
-                                </span>
+                                <div className="flex flex-col items-center text-text-muted group-hover:text-primary transition-colors">
+                                    <div className="w-16 h-16 rounded-full bg-slate-200/50 flex items-center justify-center mb-4 group-hover:bg-primary/10">
+                                      <Upload size={24} />
+                                    </div>
+                                    <p className="text-sm font-bold">No logo defined</p>
+                                    <p className="text-[10px] mt-1 uppercase tracking-widest font-black opacity-50">Click to upload</p>
+                                </div>
                             )}
 
-                            {/* Overlay de Carga Visual */}
-                            <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span className="text-white text-sm font-medium">Click para cambiar</span>
+                            <div className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <div className="bg-white px-6 py-2.5 rounded-full shadow-lg text-primary text-xs font-black uppercase tracking-widest">
+                                  Change Logo
+                                </div>
                             </div>
                         </div>
 
-                        <input
-                            id="logoInput"
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={handleFileChange}
-                        />
+                        <input id="logoInput" type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
 
                         {logoFile && (
-                            <div className="w-full flex items-center justify-between text-xs bg-blue-50 text-blue-700 px-3 py-2 rounded border border-blue-200">
-                                <span className="truncate max-w-[200px]">{logoFile.name}</span>
-                                <span className="font-semibold px-2 py-0.5 bg-blue-200 text-blue-800 rounded">Listo para subir</span>
+                            <div className="flex items-center justify-between p-4 bg-primary/5 text-primary rounded-2xl border border-primary/10 animate-in fade-in duration-300">
+                                <div className="flex items-center space-x-3">
+                                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                                    <ImageIcon size={16} />
+                                  </div>
+                                  <span className="text-sm font-bold truncate max-w-[200px]">{logoFile.name}</span>
+                                </div>
+                                <div className="flex items-center space-x-2 px-3 py-1 bg-primary text-white rounded-full text-[10px] font-black uppercase tracking-tighter">
+                                  Ready to sync
+                                </div>
                             </div>
                         )}
                     </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
+                <div className="mt-12 pt-10 border-t border-border flex justify-end">
                     <button
                         type="submit"
                         disabled={loading}
-                        className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-xl shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0 cursor-pointer"
+                        className="flex items-center space-x-3 bg-primary hover:bg-indigo-700 text-white font-black py-4 px-10 rounded-2xl shadow-xl shadow-primary/20 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
                     >
                         {loading ? (
-                            <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
                         ) : (
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                            <Save size={20} />
                         )}
-                        <span>{loading ? 'Guardando Cambios...' : 'Guardar Ajustes'}</span>
+                        <span>{loading ? 'Saving Changes...' : 'Save Configuration'}</span>
                     </button>
                 </div>
             </form>
+
+            <div className="bg-slate-50 rounded-[32px] p-8 border border-slate-100">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-2xl bg-white border border-border flex items-center justify-center text-text-muted">
+                  <AlertCircle size={24} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-text-main">System Environment</h4>
+                  <p className="text-xs text-text-muted mt-1">Running on API v2.0-stable | Node 18 | Production Environment</p>
+                </div>
+              </div>
+            </div>
         </div>
     );
 }
