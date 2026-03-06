@@ -16,80 +16,66 @@ class DashboardController extends Controller
         $this->db = Database::getInstance()->getConnection();
     }
 
-    /**
-     * GET /api/dashboard
-     */
     public function index()
     {
-        // Suprimir warnings de PHP para que no rompan el JSON
         error_reporting(0);
 
-        $currentMonthStart = date('Y-m-01');
-        $currentMonthEnd = date('Y-m-t');
+        $start = date('Y-m-01');
+        $end = date('Y-m-t');
 
         $totalBancas = 0;
         $totalEmpleados = 0;
-        $ingresosMes = 0;
-        $gastosOperaciones = 0;
-        $gastosFijos = 0;
-        $gastosNomina = 0;
+        $totalVentas = 0;
+        $totalPremios = 0;
+        $totalGastosBanca = 0;
+        $totalGastosFijos = 0;
+        $totalNomina = 0;
 
         try {
-            $stmtBancas = $this->db->query("SELECT COUNT(*) FROM bancas WHERE deleted_at IS NULL");
-            $totalBancas = (int) $stmtBancas->fetchColumn();
-        } catch (\Exception $e) {
-            // deleted_at column doesn't exist, count without filter
-            try {
-                $stmtBancas = $this->db->query("SELECT COUNT(*) FROM bancas");
-                $totalBancas = (int) $stmtBancas->fetchColumn();
-            } catch (\Exception $e2) {
-            }
-        }
-
-        try {
-            $stmtEmpleados = $this->db->query("SELECT COUNT(*) FROM users");
-            $totalEmpleados = (int) $stmtEmpleados->fetchColumn();
+            $totalBancas = (int) $this->db->query("SELECT COUNT(*) FROM bancas")->fetchColumn();
         } catch (\Exception $e) {
         }
 
         try {
-            $stmtIngresos = $this->db->prepare("SELECT COALESCE(SUM(monto), 0) FROM operaciones WHERE tipo = 'ingreso' AND fecha BETWEEN :start AND :end");
-            $stmtIngresos->execute(['start' => $currentMonthStart, 'end' => $currentMonthEnd]);
-            $ingresosMes = (float) $stmtIngresos->fetchColumn();
+            $totalEmpleados = (int) $this->db->query("SELECT COUNT(*) FROM empleados WHERE status = 'Activo'")->fetchColumn();
         } catch (\Exception $e) {
         }
 
         try {
-            $stmtGastosOp = $this->db->prepare("SELECT COALESCE(SUM(monto), 0) FROM operaciones WHERE tipo = 'gasto' AND fecha BETWEEN :start AND :end");
-            $stmtGastosOp->execute(['start' => $currentMonthStart, 'end' => $currentMonthEnd]);
-            $gastosOperaciones = (float) $stmtGastosOp->fetchColumn();
+            $stmt = $this->db->prepare("SELECT COALESCE(SUM(ventas_brutas),0), COALESCE(SUM(premios_pagados),0), COALESCE(SUM(gastos_banca),0) FROM operaciones WHERE operation_date BETWEEN :s AND :e");
+            $stmt->execute([':s' => $start, ':e' => $end]);
+            [$totalVentas, $totalPremios, $totalGastosBanca] = $stmt->fetch(PDO::FETCH_NUM);
+            $totalVentas = (float) $totalVentas;
+            $totalPremios = (float) $totalPremios;
+            $totalGastosBanca = (float) $totalGastosBanca;
         } catch (\Exception $e) {
         }
 
         try {
-            $stmtGastosFijos = $this->db->prepare("SELECT COALESCE(SUM(monto), 0) FROM gastos WHERE estado = 'Pagado' AND fecha BETWEEN :start AND :end");
-            $stmtGastosFijos->execute(['start' => $currentMonthStart, 'end' => $currentMonthEnd]);
-            $gastosFijos = (float) $stmtGastosFijos->fetchColumn();
+            $stmt = $this->db->prepare("SELECT COALESCE(SUM(amount),0) FROM gastos WHERE expense_date BETWEEN :s AND :e");
+            $stmt->execute([':s' => $start, ':e' => $end]);
+            $totalGastosFijos = (float) $stmt->fetchColumn();
         } catch (\Exception $e) {
         }
 
         try {
-            $stmtNomina = $this->db->prepare("SELECT COALESCE(SUM(monto_pagado), 0) FROM pagos_nomina WHERE fecha_pago BETWEEN :start AND :end");
-            $stmtNomina->execute(['start' => $currentMonthStart, 'end' => $currentMonthEnd]);
-            $gastosNomina = (float) $stmtNomina->fetchColumn();
+            $stmt = $this->db->prepare("SELECT COALESCE(SUM(net_pay),0) FROM pagos_nomina WHERE payment_date BETWEEN :s AND :e");
+            $stmt->execute([':s' => $start, ':e' => $end]);
+            $totalNomina = (float) $stmt->fetchColumn();
         } catch (\Exception $e) {
         }
 
-        $gastosTotalesMes = $gastosOperaciones + $gastosFijos + $gastosNomina;
-        $balanceNeto = $ingresosMes - $gastosTotalesMes;
+        $ingresosMes = $totalVentas;
+        $gastosMes = $totalPremios + $totalGastosBanca + $totalGastosFijos + $totalNomina;
+        $balanceNeto = $ingresosMes - $gastosMes;
 
         $this->jsonResponse([
             'total_bancas' => $totalBancas,
             'total_empleados' => $totalEmpleados,
             'ingresos_mes' => $ingresosMes,
-            'gastos_mes' => $gastosTotalesMes,
+            'gastos_mes' => $gastosMes,
             'balance_neto' => $balanceNeto,
-            'periodo' => date('M Y')
+            'periodo' => date('F Y'),
         ]);
     }
 }

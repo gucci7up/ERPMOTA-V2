@@ -16,91 +16,53 @@ class ReporteController extends Controller
         $this->db = Database::getInstance()->getConnection();
     }
 
-    /**
-     * GET /api/reportes/excel
-     * Uses fputcsv to stream a CSV directly to the browser
-     */
+    // GET /api/reportes/excel?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD
     public function exportExcel()
     {
-        $startDate = $_GET['start_date'] ?? '1970-01-01';
-        $endDate = $_GET['end_date'] ?? date('Y-m-d');
+        $start = $_GET['start_date'] ?? date('Y-m-01');
+        $end = $_GET['end_date'] ?? date('Y-m-d');
 
-        // Modificamos las cabeceras para forzar la descarga de un CSV
         header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename="reporte_financiero_' . date('Ymd_His') . '.csv"');
+        header('Content-Disposition: attachment; filename="reporte_' . date('Ymd_His') . '.csv"');
 
-        // Abrimos la salida estandar nativa de PHP para escribir directo
         $output = fopen('php://output', 'w');
+        fputs($output, chr(0xEF) . chr(0xBB) . chr(0xBF)); // BOM UTF-8
 
-        // UTF-8 BOM para que Excel lea tildes correctamente
-        fputs($output, $bom = (chr(0xEF) . chr(0xBB) . chr(0xBF)));
+        fputcsv($output, ['Fecha', 'Origen', 'Descripcion', 'Tipo', 'Monto (RD$)']);
 
-        // Escribimos los headers de las columnas
-        fputcsv($output, ['Fecha', 'Origen', 'Concepto/Descripcion', 'Tipo', 'Monto (RD$)']);
-
-        // 1. Obtener Operaciones (Ingresos y Gastos Variables)
-        $sqlOperaciones = "
-            SELECT fecha, 'Operaciones (Variable)' as origen, descripcion, tipo, monto 
-            FROM operaciones 
-            WHERE fecha BETWEEN :start AND :end
-            ORDER BY fecha ASC
-        ";
-        $stmtOp = $this->db->prepare($sqlOperaciones);
-        $stmtOp->execute(['start' => $startDate, 'end' => $endDate]);
-
-        while ($row = $stmtOp->fetch(PDO::FETCH_ASSOC)) {
-            fputcsv($output, [
-                $row['fecha'],
-                $row['origen'],
-                $row['descripcion'],
-                strtoupper($row['tipo']),
-                $row['monto']
-            ]);
+        // 1. Operaciones (ventas_brutas como ingreso, premios+gastos como gasto)
+        try {
+            $stmt = $this->db->prepare("SELECT o.operation_date, b.name as banca_name, o.ventas_brutas, o.premios_pagados, o.gastos_banca, o.balance_neto FROM operaciones o LEFT JOIN bancas b ON o.banca_id = b.id WHERE o.operation_date BETWEEN :s AND :e ORDER BY o.operation_date ASC");
+            $stmt->execute([':s' => $start, ':e' => $end]);
+            while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                fputcsv($output, [$r['operation_date'], $r['banca_name'], 'Ventas Brutas', 'INGRESO', $r['ventas_brutas']]);
+                fputcsv($output, [$r['operation_date'], $r['banca_name'], 'Premios Pagados', 'GASTO', $r['premios_pagados']]);
+                fputcsv($output, [$r['operation_date'], $r['banca_name'], 'Gastos de Banca', 'GASTO', $r['gastos_banca']]);
+            }
+        } catch (\Exception $e) {
         }
 
-        // 2. Obtener Gastos Fijos (Solo Pagados)
-        $sqlGastos = "
-            SELECT fecha, 'Gastos Fijos' as origen, concepto as descripcion, 'GASTO' as tipo, monto 
-            FROM gastos 
-            WHERE estado = 'Pagado' AND fecha BETWEEN :start AND :end
-            ORDER BY fecha ASC
-        ";
-        $stmtGas = $this->db->prepare($sqlGastos);
-        $stmtGas->execute(['start' => $startDate, 'end' => $endDate]);
-
-        while ($row = $stmtGas->fetch(PDO::FETCH_ASSOC)) {
-            fputcsv($output, [
-                $row['fecha'],
-                $row['origen'],
-                $row['descripcion'],
-                $row['tipo'],
-                $row['monto']
-            ]);
+        // 2. Gastos Fijos
+        try {
+            $stmt = $this->db->prepare("SELECT g.expense_date, b.name as banca_name, g.description, g.category, g.amount FROM gastos g LEFT JOIN bancas b ON g.banca_id = b.id WHERE g.expense_date BETWEEN :s AND :e ORDER BY g.expense_date ASC");
+            $stmt->execute([':s' => $start, ':e' => $end]);
+            while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                fputcsv($output, [$r['expense_date'], $r['banca_name'] ?? 'General', $r['description'] . ' (' . $r['category'] . ')', 'GASTO', $r['amount']]);
+            }
+        } catch (\Exception $e) {
         }
 
-        // 3. Obtener Pagos de Nómina
-        $sqlNomina = "
-            SELECT n.fecha_pago as fecha, 'Nómina' as origen, concat('Pago a ', u.name, ' (', n.periodo, ')') as descripcion, 'GASTO' as tipo, n.monto_pagado as monto 
-            FROM pagos_nomina n
-            JOIN users u ON n.empleado_id = u.id
-            WHERE n.fecha_pago BETWEEN :start AND :end
-            ORDER BY n.fecha_pago ASC
-        ";
-        $stmtNom = $this->db->prepare($sqlNomina);
-        $stmtNom->execute(['start' => $startDate, 'end' => $endDate]);
-
-        while ($row = $stmtNom->fetch(PDO::FETCH_ASSOC)) {
-            fputcsv($output, [
-                $row['fecha'],
-                $row['origen'],
-                $row['descripcion'],
-                $row['tipo'],
-                $row['monto']
-            ]);
+        // 3. Pagos de Nómina
+        try {
+            $stmt = $this->db->prepare("SELECT p.payment_date, e.name as empleado_name, p.month_year, p.net_pay FROM pagos_nomina p LEFT JOIN empleados e ON p.empleado_id = e.id WHERE p.payment_date BETWEEN :s AND :e ORDER BY p.payment_date ASC");
+            $stmt->execute([':s' => $start, ':e' => $end]);
+            while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                fputcsv($output, [$r['payment_date'], 'Nómina', 'Pago a ' . $r['empleado_name'] . ' (' . $r['month_year'] . ')', 'GASTO', $r['net_pay']]);
+            }
+        } catch (\Exception $e) {
         }
 
-        // Cerramos el flujo
         fclose($output);
-        exit(); // Asegurarnos de no imprimir nada más después de generar el CSV
+        exit();
     }
 }

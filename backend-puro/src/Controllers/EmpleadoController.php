@@ -16,136 +16,68 @@ class EmpleadoController extends Controller
         $this->db = Database::getInstance()->getConnection();
     }
 
-    /**
-     * GET /api/empleados
-     * Devuelve todos los usuarios que tienen rol 'empleado' haciendo JOIN con bancas
-     */
+    // GET /api/empleados
     public function index()
     {
-        $sql = "
-            SELECT 
-                u.id, 
-                u.name, 
-                u.email, 
-                u.phone,
-                u.role, 
-                u.banca_id,
-                b.name as banca_name,
-                u.created_at 
-            FROM users u
-            LEFT JOIN bancas b ON u.banca_id = b.id
-            WHERE u.role = 'empleado' 
-            ORDER BY u.id DESC
-        ";
-
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare("
+            SELECT e.*, b.name as banca_name
+            FROM empleados e
+            LEFT JOIN bancas b ON e.banca_id = b.id
+            ORDER BY e.id DESC
+        ");
         $stmt->execute();
         $this->jsonResponse($stmt->fetchAll());
     }
 
-    /**
-     * POST /api/empleados
-     */
+    // POST /api/empleados
     public function store()
     {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json, true);
-
-        if (empty($data['name']) || empty($data['email']) || empty($data['password'])) {
-            $this->jsonResponse(['error' => 'Nombre, correo y contraseña son requeridos'], 400);
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (empty($data['name'])) {
+            $this->jsonResponse(['error' => 'Name is required'], 400);
+            return;
         }
-
-        // Verificar si existe el email
-        $check = $this->db->prepare("SELECT id FROM users WHERE email = :email");
-        $check->bindParam(':email', $data['email'], \PDO::PARAM_STR);
-        $check->execute();
-
-        if ($check->rowCount() > 0) {
-            $this->jsonResponse(['error' => 'El correo electrónico ya está en uso'], 409);
-        }
-
-        $stmt = $this->db->prepare("INSERT INTO users (name, email, password, phone, role, banca_id) VALUES (:name, :email, :password, :phone, 'empleado', :banca_id)");
-
-        $hashed = password_hash($data['password'], PASSWORD_BCRYPT);
-
-        $phone = !empty($data['phone']) ? $data['phone'] : null;
-        $banca_id = !empty($data['banca_id']) ? $data['banca_id'] : null;
-
-        $stmt->bindParam(':name', $data['name'], \PDO::PARAM_STR);
-        $stmt->bindParam(':email', $data['email'], \PDO::PARAM_STR);
-        $stmt->bindParam(':password', $hashed, \PDO::PARAM_STR);
-        $stmt->bindParam(':phone', $phone, \PDO::PARAM_STR);
-        $stmt->bindParam(':banca_id', $banca_id, \PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $data['id'] = $this->db->lastInsertId();
-            unset($data['password']);
-            $this->jsonResponse(['message' => 'Empleado creado exitosamente', 'empleado' => $data], 201);
-        } else {
-            $this->jsonResponse(['error' => 'Error al crear el empleado'], 500);
-        }
+        $stmt = $this->db->prepare("INSERT INTO empleados (name, role, email, phone, salary, status, banca_id) VALUES (:name, :role, :email, :phone, :salary, :status, :banca_id)");
+        $stmt->execute([
+            ':name' => $data['name'],
+            ':role' => $data['role'] ?? null,
+            ':email' => $data['email'] ?? null,
+            ':phone' => $data['phone'] ?? null,
+            ':salary' => $data['salary'] ?? 0,
+            ':status' => $data['status'] ?? 'Activo',
+            ':banca_id' => $data['banca_id'] ?? null,
+        ]);
+        $data['id'] = $this->db->lastInsertId();
+        $this->jsonResponse(['message' => 'Empleado creado', 'empleado' => $data], 201);
     }
 
-    /**
-     * PUT /api/empleados/{id}
-     */
+    // PUT /api/empleados/{id}
     public function update($id)
     {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json, true);
-
-        if (empty($data['name']) || empty($data['email'])) {
-            $this->jsonResponse(['error' => 'Nombre y correo son requeridos'], 400);
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (empty($data['name'])) {
+            $this->jsonResponse(['error' => 'Name is required'], 400);
+            return;
         }
-
-        // Verificar si el nuevo email ya existe en otro empleado
-        $check = $this->db->prepare("SELECT id FROM users WHERE email = :email AND id != :id");
-        $check->bindParam(':email', $data['email'], \PDO::PARAM_STR);
-        $check->bindParam(':id', $id, \PDO::PARAM_INT);
-        $check->execute();
-
-        if ($check->rowCount() > 0) {
-            $this->jsonResponse(['error' => 'El correo electrónico ya está en uso por otro usuario'], 409);
-        }
-
-        $phone = !empty($data['phone']) ? $data['phone'] : null;
-        $banca_id = !empty($data['banca_id']) ? $data['banca_id'] : null;
-
-        // Si mandaron password nuevo, lo actualizamos también
-        if (!empty($data['password'])) {
-            $stmt = $this->db->prepare("UPDATE users SET name = :name, email = :email, phone = :phone, banca_id = :banca_id, password = :password WHERE id = :id AND role = 'empleado'");
-            $hashed = password_hash($data['password'], PASSWORD_BCRYPT);
-            $stmt->bindParam(':password', $hashed, \PDO::PARAM_STR);
-        } else {
-            $stmt = $this->db->prepare("UPDATE users SET name = :name, email = :email, phone = :phone, banca_id = :banca_id WHERE id = :id AND role = 'empleado'");
-        }
-
-        $stmt->bindParam(':name', $data['name'], \PDO::PARAM_STR);
-        $stmt->bindParam(':email', $data['email'], \PDO::PARAM_STR);
-        $stmt->bindParam(':phone', $phone, \PDO::PARAM_STR);
-        $stmt->bindParam(':banca_id', $banca_id, \PDO::PARAM_INT);
-        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            unset($data['password']); // No devolver el password
-            $this->jsonResponse(['message' => 'Empleado actualizado exitosamente']);
-        } else {
-            $this->jsonResponse(['error' => 'Error al actualizar el empleado'], 500);
-        }
+        $stmt = $this->db->prepare("UPDATE empleados SET name = :name, role = :role, email = :email, phone = :phone, salary = :salary, status = :status, banca_id = :banca_id WHERE id = :id");
+        $stmt->execute([
+            ':name' => $data['name'],
+            ':role' => $data['role'] ?? null,
+            ':email' => $data['email'] ?? null,
+            ':phone' => $data['phone'] ?? null,
+            ':salary' => $data['salary'] ?? 0,
+            ':status' => $data['status'] ?? 'Activo',
+            ':banca_id' => $data['banca_id'] ?? null,
+            ':id' => $id,
+        ]);
+        $this->jsonResponse(['message' => 'Empleado actualizado']);
     }
 
-    /**
-     * DELETE /api/empleados/{id}
-     */
+    // DELETE /api/empleados/{id}
     public function destroy($id)
     {
-        $stmt = $this->db->prepare("DELETE FROM users WHERE id = :id AND role = 'empleado'");
-        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $this->jsonResponse(['message' => 'Empleado eliminado exitosamente']);
-        } else {
-            $this->jsonResponse(['error' => 'Error al eliminar el empleado'], 500);
-        }
+        $stmt = $this->db->prepare("DELETE FROM empleados WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        $this->jsonResponse(['message' => 'Empleado eliminado']);
     }
 }

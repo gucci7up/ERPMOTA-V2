@@ -16,95 +16,93 @@ class NominaController extends Controller
         $this->db = Database::getInstance()->getConnection();
     }
 
-    /**
-     * GET /api/pagos-nomina
-     */
+    // GET /api/pagos-nomina
     public function index()
     {
-        $sql = "
-            SELECT 
-                p.id, 
-                p.empleado_id, 
-                p.monto_pagado, 
-                p.fecha_pago, 
-                p.periodo,
-                e.name as empleado_name
+        $stmt = $this->db->prepare("
+            SELECT p.*, e.name as empleado_name, b.name as banca_name
             FROM pagos_nomina p
-            LEFT JOIN users e ON p.empleado_id = e.id
-            ORDER BY p.fecha_pago DESC, p.id DESC
-        ";
-
-        $stmt = $this->db->prepare($sql);
+            LEFT JOIN empleados e ON p.empleado_id = e.id
+            LEFT JOIN bancas b ON p.banca_id = b.id
+            ORDER BY p.payment_date DESC
+        ");
         $stmt->execute();
         $this->jsonResponse($stmt->fetchAll());
     }
 
-    /**
-     * POST /api/pagos-nomina
-     */
+    // POST /api/pagos-nomina
     public function store()
     {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json, true);
-
-        if (empty($data['empleado_id']) || empty($data['fecha_pago']) || empty($data['periodo']) || !isset($data['monto_pagado'])) {
-            $this->jsonResponse(['error' => 'Faltan campos obligatorios para registrar el pago'], 400);
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (empty($data['empleado_id'])) {
+            $this->jsonResponse(['error' => 'empleado_id es requerido'], 400);
+            return;
         }
 
-        $stmt = $this->db->prepare("INSERT INTO pagos_nomina (empleado_id, monto_pagado, fecha_pago, periodo) VALUES (:empleado_id, :monto_pagado, :fecha_pago, :periodo)");
+        $base = $data['base_salary'] ?? 0;
+        $ars = $data['ars_deduction'] ?? 0;
+        $afp = $data['afp_deduction'] ?? 0;
+        $otros = $data['other_deductions'] ?? 0;
+        $bonuses = $data['bonuses'] ?? 0;
+        $deducciones = $ars + $afp + $otros;
+        $neto = $base - $deducciones + $bonuses;
 
-        $stmt->bindParam(':empleado_id', $data['empleado_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':monto_pagado', $data['monto_pagado'], PDO::PARAM_STR);
-        $stmt->bindParam(':fecha_pago', $data['fecha_pago'], PDO::PARAM_STR);
-        $stmt->bindParam(':periodo', $data['periodo'], PDO::PARAM_STR);
-
-        if ($stmt->execute()) {
-            $data['id'] = $this->db->lastInsertId();
-            $this->jsonResponse(['message' => 'Pago de nómina registrado exitosamente', 'pago' => $data], 201);
-        } else {
-            $this->jsonResponse(['error' => 'Error al registrar el pago de nómina'], 500);
-        }
+        $stmt = $this->db->prepare("INSERT INTO pagos_nomina (empleado_id, banca_id, month_year, payment_date, base_salary, ars_deduction, afp_deduction, other_deductions, deductions, bonuses, net_pay, status) VALUES (:empleado_id, :banca_id, :month_year, :payment_date, :base_salary, :ars, :afp, :otros, :deductions, :bonuses, :net_pay, :status)");
+        $stmt->execute([
+            ':empleado_id' => $data['empleado_id'],
+            ':banca_id' => $data['banca_id'] ?? null,
+            ':month_year' => $data['month_year'] ?? date('Y-m'),
+            ':payment_date' => $data['payment_date'] ?? date('Y-m-d'),
+            ':base_salary' => $base,
+            ':ars' => $ars,
+            ':afp' => $afp,
+            ':otros' => $otros,
+            ':deductions' => $deducciones,
+            ':bonuses' => $bonuses,
+            ':net_pay' => $neto,
+            ':status' => $data['status'] ?? 'Pagado',
+        ]);
+        $data['id'] = $this->db->lastInsertId();
+        $data['net_pay'] = $neto;
+        $this->jsonResponse(['message' => 'Pago de nómina registrado', 'pago' => $data], 201);
     }
 
-    /**
-     * PUT /api/pagos-nomina/{id}
-     */
+    // PUT /api/pagos-nomina/{id}
     public function update($id)
     {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json, true);
+        $data = json_decode(file_get_contents('php://input'), true);
+        $base = $data['base_salary'] ?? 0;
+        $ars = $data['ars_deduction'] ?? 0;
+        $afp = $data['afp_deduction'] ?? 0;
+        $otros = $data['other_deductions'] ?? 0;
+        $bonuses = $data['bonuses'] ?? 0;
+        $deducciones = $ars + $afp + $otros;
+        $neto = $base - $deducciones + $bonuses;
 
-        if (empty($data['empleado_id']) || empty($data['fecha_pago']) || empty($data['periodo']) || !isset($data['monto_pagado'])) {
-            $this->jsonResponse(['error' => 'Faltan campos obligatorios para actualizar el pago'], 400);
-        }
-
-        $stmt = $this->db->prepare("UPDATE pagos_nomina SET empleado_id = :empleado_id, monto_pagado = :monto_pagado, fecha_pago = :fecha_pago, periodo = :periodo WHERE id = :id");
-
-        $stmt->bindParam(':empleado_id', $data['empleado_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':monto_pagado', $data['monto_pagado'], PDO::PARAM_STR);
-        $stmt->bindParam(':fecha_pago', $data['fecha_pago'], PDO::PARAM_STR);
-        $stmt->bindParam(':periodo', $data['periodo'], PDO::PARAM_STR);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $this->jsonResponse(['message' => 'Pago de nómina actualizado exitosamente']);
-        } else {
-            $this->jsonResponse(['error' => 'Error al actualizar el pago de nómina'], 500);
-        }
+        $stmt = $this->db->prepare("UPDATE pagos_nomina SET empleado_id = :empleado_id, banca_id = :banca_id, month_year = :month_year, payment_date = :payment_date, base_salary = :base_salary, ars_deduction = :ars, afp_deduction = :afp, other_deductions = :otros, deductions = :deductions, bonuses = :bonuses, net_pay = :net_pay, status = :status WHERE id = :id");
+        $stmt->execute([
+            ':empleado_id' => $data['empleado_id'],
+            ':banca_id' => $data['banca_id'] ?? null,
+            ':month_year' => $data['month_year'] ?? date('Y-m'),
+            ':payment_date' => $data['payment_date'] ?? date('Y-m-d'),
+            ':base_salary' => $base,
+            ':ars' => $ars,
+            ':afp' => $afp,
+            ':otros' => $otros,
+            ':deductions' => $deducciones,
+            ':bonuses' => $bonuses,
+            ':net_pay' => $neto,
+            ':status' => $data['status'] ?? 'Pagado',
+            ':id' => $id,
+        ]);
+        $this->jsonResponse(['message' => 'Pago actualizado']);
     }
 
-    /**
-     * DELETE /api/pagos-nomina/{id}
-     */
+    // DELETE /api/pagos-nomina/{id}
     public function destroy($id)
     {
         $stmt = $this->db->prepare("DELETE FROM pagos_nomina WHERE id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $this->jsonResponse(['message' => 'Pago de nómina eliminado exitosamente']);
-        } else {
-            $this->jsonResponse(['error' => 'Error al eliminar el pago de nómina'], 500);
-        }
+        $stmt->execute([':id' => $id]);
+        $this->jsonResponse(['message' => 'Pago eliminado']);
     }
 }

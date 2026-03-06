@@ -16,103 +16,60 @@ class GastoController extends Controller
         $this->db = Database::getInstance()->getConnection();
     }
 
-    /**
-     * GET /api/gastos
-     */
+    // GET /api/gastos
     public function index()
     {
-        $sql = "
-            SELECT 
-                g.id, 
-                g.banca_id, 
-                g.concepto, 
-                g.monto, 
-                g.fecha, 
-                g.estado,
-                b.name as banca_name
+        $stmt = $this->db->prepare("
+            SELECT g.*, b.name as banca_name
             FROM gastos g
             LEFT JOIN bancas b ON g.banca_id = b.id
-            ORDER BY g.fecha DESC, g.id DESC
-        ";
-
-        $stmt = $this->db->prepare($sql);
+            ORDER BY g.expense_date DESC
+        ");
         $stmt->execute();
         $this->jsonResponse($stmt->fetchAll());
     }
 
-    /**
-     * POST /api/gastos
-     */
+    // POST /api/gastos
     public function store()
     {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json, true);
-
-        if (empty($data['banca_id']) || empty($data['concepto']) || empty($data['fecha']) || !isset($data['monto'])) {
-            $this->jsonResponse(['error' => 'Faltan campos obligatorios para registrar el gasto'], 400);
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (empty($data['description']) || empty($data['amount'])) {
+            $this->jsonResponse(['error' => 'description y amount son requeridos'], 400);
+            return;
         }
-
-        $stmt = $this->db->prepare("INSERT INTO gastos (banca_id, concepto, monto, fecha, estado) VALUES (:banca_id, :concepto, :monto, :fecha, :estado)");
-
-        $estado = $data['estado'] ?? 'Pendiente';
-
-        $stmt->bindParam(':banca_id', $data['banca_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':concepto', $data['concepto'], PDO::PARAM_STR);
-        $stmt->bindParam(':monto', $data['monto'], PDO::PARAM_STR);
-        $stmt->bindParam(':fecha', $data['fecha'], PDO::PARAM_STR);
-        $stmt->bindParam(':estado', $estado, PDO::PARAM_STR);
-
-        if ($stmt->execute()) {
-            $data['id'] = $this->db->lastInsertId();
-            $data['estado'] = $estado;
-            $this->jsonResponse(['message' => 'Gasto registrado exitosamente', 'gasto' => $data], 201);
-        } else {
-            $this->jsonResponse(['error' => 'Error al registrar el gasto'], 500);
-        }
+        $stmt = $this->db->prepare("INSERT INTO gastos (description, category, amount, expense_date, banca_id) VALUES (:description, :category, :amount, :expense_date, :banca_id)");
+        $stmt->execute([
+            ':description' => $data['description'],
+            ':category' => $data['category'] ?? 'Operativo',
+            ':amount' => $data['amount'],
+            ':expense_date' => $data['expense_date'] ?? date('Y-m-d'),
+            ':banca_id' => $data['banca_id'] ?? null,
+        ]);
+        $data['id'] = $this->db->lastInsertId();
+        $this->jsonResponse(['message' => 'Gasto registrado', 'gasto' => $data], 201);
     }
 
-    /**
-     * PUT /api/gastos/{id}
-     */
+    // PUT /api/gastos/{id}
     public function update($id)
     {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json, true);
-
-        if (empty($data['banca_id']) || empty($data['concepto']) || empty($data['fecha']) || !isset($data['monto'])) {
-            $this->jsonResponse(['error' => 'Faltan campos obligatorios para actualizar el gasto'], 400);
-        }
-
-        $stmt = $this->db->prepare("UPDATE gastos SET banca_id = :banca_id, concepto = :concepto, monto = :monto, fecha = :fecha, estado = :estado WHERE id = :id");
-
-        $estado = $data['estado'] ?? 'Pendiente';
-
-        $stmt->bindParam(':banca_id', $data['banca_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':concepto', $data['concepto'], PDO::PARAM_STR);
-        $stmt->bindParam(':monto', $data['monto'], PDO::PARAM_STR);
-        $stmt->bindParam(':fecha', $data['fecha'], PDO::PARAM_STR);
-        $stmt->bindParam(':estado', $estado, PDO::PARAM_STR);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $this->jsonResponse(['message' => 'Gasto actualizado exitosamente']);
-        } else {
-            $this->jsonResponse(['error' => 'Error al actualizar el gasto'], 500);
-        }
+        $data = json_decode(file_get_contents('php://input'), true);
+        $stmt = $this->db->prepare("UPDATE gastos SET description = :description, category = :category, amount = :amount, expense_date = :expense_date, banca_id = :banca_id WHERE id = :id");
+        $stmt->execute([
+            ':description' => $data['description'],
+            ':category' => $data['category'] ?? 'Operativo',
+            ':amount' => $data['amount'],
+            ':expense_date' => $data['expense_date'] ?? date('Y-m-d'),
+            ':banca_id' => $data['banca_id'] ?? null,
+            ':id' => $id,
+        ]);
+        $this->jsonResponse(['message' => 'Gasto actualizado']);
     }
 
-    /**
-     * DELETE /api/gastos/{id}
-     */
+    // DELETE /api/gastos/{id}
     public function destroy($id)
     {
         $stmt = $this->db->prepare("DELETE FROM gastos WHERE id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $this->jsonResponse(['message' => 'Gasto eliminado exitosamente']);
-        } else {
-            $this->jsonResponse(['error' => 'Error al eliminar el gasto'], 500);
-        }
+        $stmt->execute([':id' => $id]);
+        $this->jsonResponse(['message' => 'Gasto eliminado']);
     }
 }
