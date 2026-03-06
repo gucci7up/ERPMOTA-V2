@@ -16,7 +16,7 @@ export default function Bancas() {
     const fetchBancas = async () => {
         setLoading(true);
         try {
-            const response = await fetch('https://api-v2.salamihost.lat/api/bancas', { credentials: 'true' });
+            const response = await fetch('https://api-v2.salamihost.lat/api/bancas', { credentials: 'include' });
             if (response.ok) {
                 const data = await response.json();
                 setBancas(data);
@@ -64,7 +64,7 @@ export default function Bancas() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                credentials: 'true',
+                credentials: 'include',
                 body: JSON.stringify(currentBanca)
             });
 
@@ -87,7 +87,7 @@ export default function Bancas() {
         try {
             const response = await fetch(`https://api-v2.salamihost.lat/api/bancas/${id}`, {
                 method: 'DELETE',
-                credentials: 'true'
+                credentials: 'include'
             });
             if (response.ok) {
                 fetchBancas();
@@ -150,8 +150,8 @@ export default function Bancas() {
                                         <td className="px-6 py-4 text-slate-600 truncate max-w-[200px]">{banca.address || '-'}</td>
                                         <td className="px-6 py-4 text-slate-600">{banca.phone || '-'}</td>
                                         <td className="px-6 py-4 text-center">
-                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${banca.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                                {banca.status === 'active' ? 'Activa' : 'Inactiva'}
+                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${banca.status === 'Activa' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                {banca.status}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right flex justify-end gap-3">
