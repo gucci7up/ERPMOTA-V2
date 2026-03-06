@@ -101,55 +101,9 @@ export default function Dashboard() {
                 />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                {/* Staff applications card */}
-                <div className="bg-white p-10 rounded-[40px] shadow-md border border-border flex flex-col items-center">
-                    <div className="w-full flex justify-between items-center mb-8">
-                       <h3 className="text-xl font-black text-text-main">Solicitudes de Personal</h3>
-                       <MoreVertical size={20} className="text-text-muted cursor-pointer" />
-                    </div>
-                    
-                    <div className="relative w-full h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie
-                                    data={staffData}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={70}
-                                    outerRadius={90}
-                                    paddingAngle={5}
-                                    dataKey="value"
-                                    stroke="none"
-                                >
-                                    {staffData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                            </PieChart>
-                        </ResponsiveContainer>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <span className="text-3xl font-black text-text-main">200</span>
-                            <span className="text-xs font-bold text-text-muted uppercase">Total</span>
-                        </div>
-                    </div>
-
-                    <div className="w-full grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-slate-50">
-                        {staffData.map((item) => (
-                           <div key={item.name} className="flex flex-col">
-                              <div className="flex items-center space-x-2">
-                                <div className="w-1.5 h-6 rounded-full" style={{ backgroundColor: item.color }}></div>
-                                <span className="text-2xl font-black text-text-main">{item.value}</span>
-                              </div>
-                              <span className="text-[10px] font-black text-text-muted uppercase tracking-wider ml-3">{item.name}</span>
-                           </div>
-                        ))}
-                    </div>
-                </div>
-
+            <div className="grid grid-cols-1 lg:grid-cols-1 gap-10">
                 {/* Annual payroll summary */}
-                <div className="lg:col-span-2 bg-white p-10 rounded-[40px] shadow-md border border-border">
+                <div className="bg-white p-10 rounded-[40px] shadow-md border border-border">
                     <div className="w-full flex justify-between items-center mb-8">
                        <div>
                            <h3 className="text-xl font-black text-text-main">Resumen de Nómina Anual</h3>
