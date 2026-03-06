@@ -14,19 +14,19 @@ const staffData = [
 ];
 
 const payrollData = [
-  { name: '30 Sep', salario: 400, impuestos: 100, gastos: 50 },
-  { name: '10 Oct', salario: 420, impuestos: 110, gastos: 40 },
-  { name: '20 Oct', salario: 320, impuestos: 80, gastos: 30 },
-  { name: '30 Oct', salario: 450, impuestos: 120, gastos: 60 },
-  { name: '10 Nov', salario: 410, impuestos: 105, gastos: 50 },
+  { name: 'Nov', salario: 400, impuestos: 100, gastos: 50 },
+  { name: 'Dic', salario: 420, impuestos: 110, gastos: 40 },
+  { name: 'Ene', salario: 320, impuestos: 80, gastos: 30 },
+  { name: 'Feb', salario: 450, impuestos: 120, gastos: 60 },
+  { name: 'Mar', salario: 410, impuestos: 105, gastos: 50 },
 ];
 
 const incomeData = [
-  { name: '30 Sep', valor: 1.5 },
-  { name: '10 Oct', valor: 3.2 },
-  { name: '20 Oct', valor: 8.5 },
-  { name: '30 Oct', valor: 4.8 },
-  { name: '10 Nov', valor: 11.8 },
+  { name: 'Nov', valor: 1.5 },
+  { name: 'Dic', valor: 3.2 },
+  { name: 'Ene', valor: 8.5 },
+  { name: 'Feb', valor: 4.8 },
+  { name: 'Mar', valor: 11.8 },
 ];
 
 export default function Dashboard() {
