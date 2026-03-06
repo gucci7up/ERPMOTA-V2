@@ -23,10 +23,15 @@ spl_autoload_register(function ($class) {
 });
 
 use App\Middleware\Cors;
+use App\Middleware\DbSessionHandler;
 use App\Controllers\Controller; // Para que el Autoloader lo registre
 
-// Aplicar CORS a toda ruta
+// Aplicar CORS a toda ruta (también configura session cookie flags)
 Cors::handle();
+
+// Registrar handler de sesiones en MySQL (sobrevive reinicios del contenedor Docker)
+$sessionHandler = new DbSessionHandler();
+session_set_save_handler($sessionHandler, true);
 
 // Lógica de enrutamiento básica
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
