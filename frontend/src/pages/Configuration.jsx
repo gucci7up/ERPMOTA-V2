@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Upload, Building2, Globe, CheckCircle2, AlertCircle, Image as ImageIcon, X } from 'lucide-react';
+import { Save, Upload, Building2, Globe, CheckCircle2, AlertCircle, Image as ImageIcon, X, ChevronDown } from 'lucide-react';
 
 export default function Configuration() {
     const [settings, setSettings] = useState({
