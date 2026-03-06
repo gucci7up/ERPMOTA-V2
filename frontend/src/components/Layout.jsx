@@ -100,21 +100,8 @@ export default function Layout({ children, user, onLogout, settings }) {
           </div>
         </nav>
 
-        {/* USER ZONE */}
-        <div className="p-6 space-y-4">
-          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 group cursor-pointer hover:border-primary/20 transition-all">
-            <div className="flex items-center justify-between mb-3" onClick={(e) => e.stopPropagation()}>
-               <div className="w-8 h-8 rounded-lg bg-accent-orange/10 text-accent-orange flex items-center justify-center font-bold text-xs">AI</div>
-               <div className="flex items-center text-[10px] font-black text-text-muted uppercase tracking-wider">
-                 <span>Plan Pro</span>
-                 <Bell size={12} className="ml-2 animate-bounce" />
-               </div>
-            </div>
-            <button className="w-full bg-white border border-border py-2 px-4 rounded-xl text-xs font-black text-text-main shadow-sm hover:shadow-md transition-all uppercase tracking-widest">
-              Gestionar Facturación
-            </button>
-          </div>
-          
+        {/* LOGOUT ONLY */}
+        <div className="p-6">
           <button 
             onClick={onLogout}
             className="flex items-center space-x-3 w-full px-4 py-3 text-text-muted hover:text-accent-red hover:bg-red-50 rounded-xl transition-all group"
