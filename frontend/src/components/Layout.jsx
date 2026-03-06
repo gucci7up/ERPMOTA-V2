@@ -20,6 +20,19 @@ import {
 } from 'lucide-react';
 
 export default function Layout({ children, user, onLogout, settings }) {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([
+    { id: 1, text: 'Nueva operación registrada en Banca Central', time: 'Hace 5 min', read: false },
+    { id: 2, text: 'Pago de nómina completado para Juan Pérez', time: 'Hace 2 horas', read: true },
+    { id: 3, text: 'Configuración de sistema actualizada', time: 'Ayer', read: true },
+  ]);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
+
   if (!user) return null;
 
   const userInitials = user.name ? user.name.charAt(0).toUpperCase() : 'U';
@@ -42,7 +55,7 @@ export default function Layout({ children, user, onLogout, settings }) {
   ];
 
   return (
-    <div className="flex h-screen bg-bg-main overflow-hidden font-sans">
+    <div className="flex h-screen bg-bg-main overflow-hidden font-sans" onClick={() => setShowNotifications(false)}>
       
       {/* SIDEBAR */}
       <aside className="w-72 bg-white border-r border-border flex flex-col z-30 shadow-xl shadow-slate-200/50">
@@ -90,7 +103,7 @@ export default function Layout({ children, user, onLogout, settings }) {
         {/* USER ZONE */}
         <div className="p-6 space-y-4">
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 group cursor-pointer hover:border-primary/20 transition-all">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-3" onClick={(e) => e.stopPropagation()}>
                <div className="w-8 h-8 rounded-lg bg-accent-orange/10 text-accent-orange flex items-center justify-center font-bold text-xs">AI</div>
                <div className="flex items-center text-[10px] font-black text-text-muted uppercase tracking-wider">
                  <span>Plan Pro</span>
@@ -131,13 +144,45 @@ export default function Layout({ children, user, onLogout, settings }) {
               <ChevronDown size={14} className="text-text-muted" />
             </div>
 
-            <button className="p-2.5 border border-border rounded-xl text-text-muted hover:bg-slate-50 hover:text-primary transition-all shadow-sm">
-              <Bell size={20} />
-            </button>
-            <button className="flex items-center space-x-2 px-4 py-2.5 bg-text-main text-white rounded-xl text-[13px] font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
-              <Download size={16} />
-              <span>Exportar</span>
-            </button>
+            <div className="relative">
+              <button 
+                onClick={(e) => { e.stopPropagation(); setShowNotifications(!showNotifications); markAllAsRead(); }}
+                className={`p-2.5 border border-border rounded-xl text-text-muted hover:bg-slate-50 hover:text-primary transition-all shadow-sm relative ${showNotifications ? 'bg-slate-50 text-primary border-primary/20' : ''}`}
+              >
+                <Bell size={20} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent-red text-white text-[9px] font-black rounded-full border-2 border-white flex items-center justify-center animate-pulse">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {showNotifications && (
+                <div 
+                  className="absolute right-0 mt-3 w-80 bg-white rounded-3xl shadow-2xl border border-border overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300 z-50"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="p-5 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
+                    <span className="text-[11px] font-black text-text-main uppercase tracking-widest font-sans">Centro de Notificaciones</span>
+                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-[9px] font-black uppercase">Sistema Live</span>
+                  </div>
+                  <div className="max-h-80 overflow-y-auto custom-scrollbar divide-y divide-slate-50">
+                    {notifications.map((n) => (
+                      <div key={n.id} className="p-4 hover:bg-slate-50 cursor-default transition-colors flex items-start space-x-3">
+                        <div className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${n.read ? 'bg-slate-200' : 'bg-primary'}`}></div>
+                        <div>
+                          <p className="text-[13px] font-bold text-text-main leading-tight tracking-tight">{n.text}</p>
+                          <p className="text-[10px] text-text-muted font-black uppercase tracking-tighter mt-1">{n.time}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="p-4 bg-slate-50/50 text-center border-t border-slate-50">
+                    <button className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline">Ver todo el historial</button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <div className="h-8 w-px bg-border mx-2"></div>
 
