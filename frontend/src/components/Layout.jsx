@@ -127,7 +127,7 @@ export default function Layout({ children, user, onLogout, settings }) {
           <div className="flex items-center space-x-4">
             <div className="hidden lg:flex items-center space-x-2 bg-slate-50 border border-border px-4 py-2.5 rounded-xl text-[13px] font-bold text-text-main">
               <Calendar size={16} className="text-primary" />
-              <span>Resumen de Octubre</span>
+              <span className="capitalize">Resumen de {new Date().toLocaleDateString('es-DO', { month: 'long' })}</span>
               <ChevronDown size={14} className="text-text-muted" />
             </div>
 
